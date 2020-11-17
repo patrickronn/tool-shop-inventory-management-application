@@ -13,31 +13,49 @@ This UML represents the overall higher-level design of the tool shop system
 @startuml
 skinparam classAttributeIconSize 0
 
-package inventory {
+/'
+package inventoryclient {
     package iview
     package icontroller
     package imodel
 }
 
-package customer {
+package customerclient {
     package cview
     package ccontroller
     package cmodel
 }
+'/
 
-cloud {
-    package server {
-        package scontroller
+package client {
+    package view
+    package ccontroller {
+        package clientcontroller
+        package cviewcontroller
+        package cmodelcontroller
+    }
+    package model
+}
+
+package server {
+    package scontroller {
+        package servercontroller
+        package smodelcontroller
+        package databasecontroller
+    }
+    package smodel {
         package inventorymodel
         package customermodel
     }
-    
-    database shop_db
 }
 
-icontroller --- scontroller
-ccontroller --- scontroller
-scontroller --> shop_db
+clientcontroller --- servercontroller : " +comms. through socket"
+
+servercontroller <.. smodelcontroller
+smodelcontroller .> databasecontroller
+
+smodelcontroller ..> smodel
+
 
 hide members
 @enduml
