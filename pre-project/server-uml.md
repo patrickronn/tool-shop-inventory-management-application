@@ -5,7 +5,6 @@ Created by: Patrick Linang
 <br>
 Course: ENSF 607
 
-This UML captures the class diagram for the server-side of the system and the  
 
 ## UML Diagram for server.smodel
 ## PlantUML code
@@ -87,7 +86,7 @@ Item "1" --o OrderLine
 @enduml
 ```
 
-## UML Diagram for server.sconntroller
+## UML Diagram for server.scontroller
 ## PlantUML code
 ```plantuml
 @startuml
@@ -98,6 +97,13 @@ interface Serializable
 
 
 package server {
+    class ToolShopServer {
+        -controllerPool: ExecutorService
+        -serverSocket: ServerSocket
+        +runServer(): void
+        +executeNewController(): void
+    }
+
     package scontroller {
         package servercontroller {
             /'
@@ -132,14 +138,12 @@ package server {
                 -inventoryController: InvModelController
                 -customerController: CustModelController
                 +createMessage(): Message
-                +sendMessage(message: Message, socketOut: OutputStream): void
+                +sendMessage(message: Message): void
                 +readMessage(message: Message): void
                 +run(): void
             }
 
-            class ToolShopServer {
-                -serverControllers: ExecutorService
-            }
+
 
             class Message implements Serializable {
                 -text: String
@@ -189,12 +193,12 @@ package server {
     InvModelController o-- "1" InvDBController
     CustModelController o-- "1" CustDBController
 
-    ToolShopServer *--- " *  " ServerController : run on thread pool
+    ToolShopServer *- "     *  " ServerController : "  run on thread pool       "
 
 }
 
-    Client ..> ToolShopServer : establishes socket connection
-    ClientController <.... ServerController : socket comms.
+    Client ..> ToolShopServer : establish socket connection
+    ClientController <... ServerController : socket comms.
 
 
 @enduml

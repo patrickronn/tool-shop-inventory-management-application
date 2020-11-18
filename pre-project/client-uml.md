@@ -1,44 +1,97 @@
-# Lab 3 Task 1 UML Diagram
+# Toolshop Project - ENSF 607/608
+UML diagram name: Client UML 
+<br>
 Created by: Patrick Linang
+<br>
+Course: ENSF 607
 
-Below is my updated UML diagram which is based on the UML discussed in lecture.
-My program for this task uses this class design rather than my design from the
-previous lab.
-
-## UML Diagram for Tool Shop App
-![UML Tool Shop](toolshop_uml.png)
-## PlantUML code for creating UML
+## UML Diagram for client.ccontroller
+## PlantUML code
 ```plantuml
 @startuml
 skinparam classAttributeIconSize 0
 
-package toolshop {
-package frontend {
-class MenuCLI
+interface ActionListener
+interface Serializable 
+package client {
+    package ccontroller {
+        package clientcontroller {
+            class ClientController
+            class Message implements Serializable {
+                -text: String
+                -inventory: Inventory
+                -supplierList: SupplierList
+                -customerList: CustomerList 
+            }
+        }
+        package cmodelcontroller {
+            class InvModelController
+            class CustModelController
+        }
+        package cviewcontroller {
+            class ViewController
+            class CustomerGUIListener implements ActionListener
+            class InventoryGUIListener implements ActionListener
+        }
+    }
 }
 
-package backend {
-class FileMgr
-class Shop
-class Inventory
-class SupplierList
-class Item
-class Supplier
-class Order
-class OrderLine
-}
-}
-MenuCLI ...> Shop : "  menu for"
-FileMgr <. Shop : loads data with
-Shop o-- "1" Inventory
-Shop o-- "1   " SupplierList
-Inventory o-- " * " Item
-SupplierList o-- " * " Supplier
-Item "*" - "1" Supplier : "     "
-Inventory o--- "1" Order
+ClientController o--- InvModelController
+ClientController o-- CustModelController
+ClientController o--- ViewController
+ViewController ...> InventoryGUIListener
+ViewController ..> CustomerGUIListener
 
-Order "1" - "*" OrderLine
-Item "1" --o OrderLine
-hide members
+Message <. ClientController : creates
+
+ClientController .> ToolShopServer : connects via socket
+ClientController <.. ServerController : "   socket comms."
+
+
+@enduml
+```
+
+## UML Diagram for client.cmodel and client.cview
+## PlantUML code
+```plantuml
+@startuml
+skinparam classAttributeIconSize 0
+
+package client {
+    package ccontroller {
+        package cmodelcontroller {
+            class InvModelController
+            class CustModelController
+        }
+        package cviewcontroller {
+            class ViewController
+            class CustomerGUIListener
+            class InventoryGUIListener
+        }
+    }
+
+    package model {
+        package inventorymodel {
+        }
+
+        package customermodel {
+        }
+    }
+
+    package view {
+        class CustomerGUI
+        class InventoryGUI
+    }
+}
+
+InvModelController ..> inventorymodel : controls
+CustModelController ..> customermodel : controls
+
+ViewController ..> InventoryGUIListener
+ViewController ...> CustomerGUIListener
+
+InventoryGUI <.. InventoryGUIListener : listens for button presses
+CustomerGUI <. CustomerGUIListener
+
 @enduml
 ```

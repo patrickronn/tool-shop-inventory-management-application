@@ -49,7 +49,12 @@ package server {
     }
 }
 
-clientcontroller --- servercontroller : " +comms. through socket"
+view <.. cviewcontroller : changes view
+model <.... cmodelcontroller : updates
+clientcontroller .> cviewcontroller
+clientcontroller ..> cmodelcontroller
+
+clientcontroller ----- servercontroller : " +comms. through socket"
 
 servercontroller <.. smodelcontroller
 smodelcontroller .> databasecontroller
