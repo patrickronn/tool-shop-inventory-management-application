@@ -11,87 +11,86 @@ Course: ENSF 607
 @startuml
 skinparam classAttributeIconSize 0
 
-interface ActionListener
-interface Serializable 
 package client {
     package ccontroller {
         package clientcontroller {
             class ClientController
-            class Message implements Serializable {
-                -text: String
-                -inventory: Inventory
-                -supplierList: SupplierList
-                -customerList: CustomerList 
+        }
+        package cmodelcontroller {
+            class ModelController
+
+            class Deserializer
+            class Serializer
+        }
+        package viewcontroller {
+            class ViewController
+            class CustomerViewController
+            class InventoryViewController
+        }
+    }
+
+    package cmessagemodel {
+            class CustomerList {
+                -customers: LinkedHashSet<Customer>
+                +addNewCustomer(customer: Customer): void
+                +updateExistingCustomer(customer: Customer): void
+                +removeCustomer(customer: Customer): void
+                +searchCustomer(id: int): Customer
+                +searchCustomer(name: String): Customer
+                +searchCustomer(type: char): Customer
             }
-        }
-        package cmodelcontroller {
-            class InvModelController
-            class CustModelController
-        }
-        package cviewcontroller {
-            class ViewController
-            class CustomerGUIListener implements ActionListener
-            class InventoryGUIListener implements ActionListener
-        }
-    }
-}
+            abstract class Customer {
+                - clientId: int
+                - firstName: String
+                - lastName: String
+                - address: String
+                - postalCode: String
+                - phoneNum: String
+                - customerType: char
+            }
+            class ResidentialCustomer extends Customer
+            class CommercialCustomer extends Customer
+     
+            class Inventory
+            class Order
+            class OrderLine
 
-ClientController o--- InvModelController
-ClientController o-- CustModelController
-ClientController o--- ViewController
-ViewController ...> InventoryGUIListener
-ViewController ..> CustomerGUIListener
-
-Message <. ClientController : creates
-
-ClientController .> ToolShopServer : connects via socket
-ClientController <.. ServerController : "   socket comms."
-
-
-@enduml
-```
-
-## UML Diagram for client.cmodel and client.cview
-## PlantUML code
-```plantuml
-@startuml
-skinparam classAttributeIconSize 0
-
-package client {
-    package ccontroller {
-        package cmodelcontroller {
-            class InvModelController
-            class CustModelController
-        }
-        package cviewcontroller {
-            class ViewController
-            class CustomerGUIListener
-            class InventoryGUIListener
-        }
-    }
-
-    package model {
-        package inventorymodel {
-        }
-
-        package customermodel {
-        }
+            abstract class Item
+            class ElectricalItem extends Item
+            class NonElectricalItem extends Item
     }
 
     package view {
-        class CustomerGUI
-        class InventoryGUI
+        class CustomerManagementGUI
+        class InventoryManagementGUI
     }
+
 }
 
-InvModelController ..> inventorymodel : controls
-CustModelController ..> customermodel : controls
+/' modelcontroller '/
+ModelController o-- ViewController
+ModelController o- ClientController
+Serializer "1" --o ModelController
+Deserializer "1" --o ModelController
+Inventory "1" -o ModelController
+CustomerList "1" -o ModelController
 
-ViewController ..> InventoryGUIListener
-ViewController ...> CustomerGUIListener
+/' viewcontroller and view '/
+ViewController *-- "1" InventoryViewController
+ViewController *-- "1" CustomerViewController
+CustomerViewController o-- "1" CustomerManagementGUI
+InventoryViewController o-- "1" InventoryManagementGUI
 
-InventoryGUI <.. InventoryGUIListener : listens for button presses
-CustomerGUI <. CustomerGUIListener
+/' cmodel '/
+Inventory o-- " * " Item
+Order "1" -o Inventory
+CustomerList o-- " * " Customer
+Order "1" -- " * " OrderLine
+OrderLine o- "1" Item
 
+
+server.ServerController <... ClientController :"   outgoing server conn."
+
+hide members
 @enduml
 ```
