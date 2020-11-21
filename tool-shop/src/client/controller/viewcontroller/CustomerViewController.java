@@ -15,17 +15,17 @@ public class CustomerViewController {
     }
 
     public void addActionListeners(ModelController modelController) {
-        customerManagementGUI.addSaveButtonListener(new CustomerButtonListeners(modelController));
+        customerManagementGUI.addSaveButtonListener(new CustomerButtonListener(modelController));
     }
 
     public CustomerManagementGUI getCustomerManagementGUI() {
         return customerManagementGUI;
     }
 
-    class CustomerButtonListeners implements ActionListener {
+    class CustomerButtonListener implements ActionListener {
         ModelController modelController;
 
-        public CustomerButtonListeners(ModelController modelController) {
+        public CustomerButtonListener(ModelController modelController) {
             this.modelController = modelController;
         }
 

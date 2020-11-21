@@ -14,7 +14,6 @@ public class ModelController {
     }
 
     public void test() {
-        // Add steps to populate the current view
         System.out.println("Save button was pressed");
     }
 }
