@@ -1,6 +1,7 @@
 package client.view;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 
 public class CustomerManagementGUI {
 
@@ -21,7 +22,7 @@ public class CustomerManagementGUI {
     private JPanel searchResultsPanel;
     private JPanel CustomerInfoPanel;
     private JLabel customerManagementLabel;
-    private JTextField textField2;
+    private JTextField customerIdField;
     private JPanel customerAttributesPanel;
     private JTextField textField3;
     private JComboBox comboBox1;
@@ -37,6 +38,14 @@ public class CustomerManagementGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public void addSaveButtonListener(ActionListener listener) {
+        saveButton.addActionListener(listener);
+    }
+
+    public String getCustomerIdValue() {
+        return customerIdField.getText();
     }
 
     public static void main(String[] args) {

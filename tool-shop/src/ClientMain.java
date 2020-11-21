@@ -1,9 +1,12 @@
+import client.controller.clientcontroller.ClientController;
+import client.controller.modelcontroller.ModelController;
+import client.controller.viewcontroller.ViewController;
 import server.model.*;
 import server.model.messagemodel.*;
 
 import java.util.LinkedHashSet;
 
-public class ToolShopDemo {
+public class ClientMain {
 
     public static void main(String[] args) {
         Order order = new Order();
@@ -24,6 +27,9 @@ public class ToolShopDemo {
 
         System.out.println(model.getInventory());
         System.out.println(model.getSupplierList());
+
+        ViewController viewController = new ViewController();
+        ModelController modelController = new ModelController(viewController, new ClientController());
 
     }
 }
