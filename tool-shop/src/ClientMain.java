@@ -28,8 +28,8 @@ public class ClientMain {
 //        System.out.println(model.getInventory());
 //        System.out.println(model.getSupplierList());
 
-        ViewController viewController = new ViewController();
-        ModelController modelController = new ModelController(viewController, new ClientController());
+//        ViewController viewController = new ViewController();
+//        ModelController modelController = new ModelController(viewController, new ClientController());
 
     }
 }

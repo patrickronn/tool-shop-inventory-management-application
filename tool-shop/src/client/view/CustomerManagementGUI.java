@@ -12,7 +12,7 @@ public class CustomerManagementGUI {
     private JPanel searchTogglePanel;
     private JPanel searchCriteriaPanel;
     private JLabel searchCustomerLabel;
-    private JTextField searachParameterField;
+    private JTextField searchParameterField;
     private JButton searchButton;
     private JButton clearSearchButton;
     private JList searchResultsList;
@@ -24,13 +24,17 @@ public class CustomerManagementGUI {
     private JLabel customerManagementLabel;
     private JTextField customerIdField;
     private JPanel customerAttributesPanel;
-    private JTextField textField3;
-    private JComboBox comboBox1;
+    private JTextField firstNameField;
+    private JComboBox customerTypeComboBox;
     private JButton saveButton;
     private JButton deleteButton;
-    private JButton clearButton;
+    private JButton clearCustomerInfoButton;
     private JPanel customerInfoButtons;
     private JSplitPane customerManagementSplitPanel;
+    private JTextField lastNameField;
+    private JTextField addressField;
+    private JTextField postalCodeField;
+    private JTextField phoneNumField;
 
     public CustomerManagementGUI() {
         JFrame frame = new JFrame("CustomerManagementGUI");
@@ -40,15 +44,85 @@ public class CustomerManagementGUI {
         frame.setVisible(true);
     }
 
-    public void addSaveButtonListener(ActionListener listener) {
-        saveButton.addActionListener(listener);
+    public void addClearSearchListener(ActionListener listener) {
+        clearSearchButton.addActionListener(listener);
+    }
+
+    public void addClearCustInfoListener(ActionListener listener) {
+        clearCustomerInfoButton.addActionListener(listener);
+    }
+
+    public void clearSearch() {
+        ((DefaultListModel)searchResultsList.getModel()).clear();
+        searchParameterField.setText("");
+    }
+
+    public void clearCustomerInfo() {
+        customerIdField.setText("");
+        firstNameField.setText("");
+        lastNameField.setText("");
+        addressField.setText("");
+        postalCodeField.setText("");
+        phoneNumField.setText("");
+        customerTypeComboBox.setSelectedIndex(0);
+    }
+
+    public void addCustomerSearchListener(ActionListener listener) {
+        searchButton.addActionListener(listener);
+    }
+
+    public String getCustomerSearchParameter() {
+        return searchParameterField.getText();
+    }
+
+    public String getCustomerSearchParameterType() {
+        if (customerIDRadioButton.isSelected())
+            return "customerId";
+        else if (lastNameRadioButton.isSelected())
+            return "lastName";
+        else if (customerTypeRadioButton.isSelected())
+            return "customerType";
+        else
+            return null;
+    }
+
+    public void addDeleteButtonListener(ActionListener listener) {
+        deleteButton.addActionListener(listener);
     }
 
     public String getCustomerIdValue() {
         return customerIdField.getText();
     }
 
-    public static void main(String[] args) {
-        CustomerManagementGUI gui = new CustomerManagementGUI();
+    public void addSaveButtonListener(ActionListener listener) {
+        saveButton.addActionListener(listener);
+    }
+
+    public String getFirstNameValue() {
+        return firstNameField.getText();
+    }
+
+    public String getLastNameValue() {
+        return lastNameField.getText();
+    }
+
+    public String getAddressValue() {
+        return addressField.getText();
+    }
+
+    public String getPostalCode() {
+        return postalCodeField.getText();
+    }
+
+    public String getPhoneNumValue() {
+        return phoneNumField.getText();
+    }
+
+    public String getCustomerType() {
+        return String.valueOf(customerTypeComboBox.getSelectedItem());
+    }
+
+    public void displayErrorMessage(String errorMessage) {
+        JOptionPane.showMessageDialog(customerManagementPanel, errorMessage);
     }
 }

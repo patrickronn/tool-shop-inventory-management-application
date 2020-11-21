@@ -77,7 +77,7 @@
                             </constraints>
                             <properties>
                               <hideActionText value="false"/>
-                              <selected value="false"/>
+                              <selected value="true"/>
                               <text value="Customer ID"/>
                             </properties>
                           </component>
@@ -125,7 +125,7 @@
                           <text value="Enter the search parameter below:"/>
                         </properties>
                       </component>
-                      <component id="a0c82" class="javax.swing.JTextField" binding="searachParameterField">
+                      <component id="a0c82" class="javax.swing.JTextField" binding="searchParameterField">
                         <constraints>
                           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
@@ -267,13 +267,15 @@
                           <text value="First Name:"/>
                         </properties>
                       </component>
-                      <component id="28136" class="javax.swing.JTextField" binding="textField3" default-binding="true">
+                      <component id="28136" class="javax.swing.JTextField" binding="firstNameField">
                         <constraints>
                           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <text value=""/>
+                        </properties>
                       </component>
                     </children>
                   </grid>
@@ -295,13 +297,15 @@
                           <text value="Last Name:"/>
                         </properties>
                       </component>
-                      <component id="2aa3f" class="javax.swing.JTextField" default-binding="true">
+                      <component id="2aa3f" class="javax.swing.JTextField" binding="lastNameField">
                         <constraints>
                           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <text value=""/>
+                        </properties>
                       </component>
                     </children>
                   </grid>
@@ -323,13 +327,15 @@
                           <text value="Address:"/>
                         </properties>
                       </component>
-                      <component id="1ce80" class="javax.swing.JTextField" default-binding="true">
+                      <component id="1ce80" class="javax.swing.JTextField" binding="addressField">
                         <constraints>
                           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="300" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <text value=""/>
+                        </properties>
                       </component>
                     </children>
                   </grid>
@@ -351,13 +357,15 @@
                           <text value="Postal Code:"/>
                         </properties>
                       </component>
-                      <component id="3cc0a" class="javax.swing.JTextField" default-binding="true">
+                      <component id="3cc0a" class="javax.swing.JTextField" binding="postalCodeField">
                         <constraints>
                           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="150" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <text value=""/>
+                        </properties>
                       </component>
                     </children>
                   </grid>
@@ -379,7 +387,7 @@
                           <text value="Phone Number:"/>
                         </properties>
                       </component>
-                      <component id="595ea" class="javax.swing.JTextField" default-binding="true">
+                      <component id="595ea" class="javax.swing.JTextField" binding="phoneNumField">
                         <constraints>
                           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
                             <preferred-size width="100" height="-1"/>
@@ -407,7 +415,7 @@
                           <text value="Customer Type:"/>
                         </properties>
                       </component>
-                      <component id="6e692" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+                      <component id="6e692" class="javax.swing.JComboBox" binding="customerTypeComboBox">
                         <constraints>
                           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -517,7 +525,7 @@
                       <text value="Delete"/>
                     </properties>
                   </component>
-                  <component id="2931b" class="javax.swing.JButton" binding="clearButton" default-binding="true">
+                  <component id="2931b" class="javax.swing.JButton" binding="clearCustomerInfoButton">
                     <constraints>
                       <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
