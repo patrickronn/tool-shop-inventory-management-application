@@ -26,6 +26,10 @@ public class CustomerViewController {
         customerManagementGUI.addSaveButtonListener(new SaveInfoListener());
     }
 
+    public void displayMessage(String message) {
+        customerManagementGUI.displayMessage(message);
+    }
+
     class ClearSearchListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -49,7 +53,7 @@ public class CustomerViewController {
             if (isParamValid(searchParamType, searchParamValue))
                 modelController.sendCustomerSearchParam(searchParamType, searchParamValue);
             else
-                customerManagementGUI.displayErrorMessage("Invalid search parameter value.");
+                customerManagementGUI.displayMessage("Invalid search parameter value.");
         }
 
         private boolean isParamValid(String searchParamType, String searchParamValue) {
@@ -63,8 +67,7 @@ public class CustomerViewController {
                         return false;
                     }
                 case "customerType":
-                    if (searchParamValue.length() != 1 ||
-                            (searchParamValue.charAt(0) != 'R' && searchParamValue.charAt(0) != 'C'))
+                    if (!searchParamValue.equals("R") && !searchParamValue.equals("C"))
                         return false;
                 default:
                     return true;
@@ -76,22 +79,52 @@ public class CustomerViewController {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                int customerId = Integer.parseInt(customerManagementGUI.getCustomerIdValue());
-
-                Map<String, String> customerInfoMap = new HashMap<>();
-                customerInfoMap.put("customerId", String.valueOf(customerId));
-                customerInfoMap.put("firstName", customerManagementGUI.getFirstNameValue());
-                customerInfoMap.put("lastName", customerManagementGUI.getLastNameValue());
-                customerInfoMap.put("address", customerManagementGUI.getAddressValue());
-                customerInfoMap.put("postalCode", customerManagementGUI.getPostalCode());
-                customerInfoMap.put("phoneNum", customerManagementGUI.getPhoneNumValue());
-                customerInfoMap.put("customerType", customerManagementGUI.getCustomerType());
-
-                modelController.updateCustomer(customerInfoMap);
-
+                // Ensure customerId is a valid integer
+                Integer.parseInt(customerManagementGUI.getCustomerIdStringValue());
+                Map<String, String> customerInfoMap = readCustomerInfo();
+                if (hasNoEmptyInfo(customerInfoMap) && hasValidCharLengths(customerInfoMap))
+                    modelController.updateCustomer(customerInfoMap);
             } catch(NumberFormatException err) {
-                customerManagementGUI.displayErrorMessage("Customer ID must be an integer.");
+                customerManagementGUI.displayMessage("Customer ID must be an integer.");
+            } catch (IllegalArgumentException err) {
+                customerManagementGUI.displayMessage(err.getMessage());
             }
+        }
+
+        private Map<String, String> readCustomerInfo() {
+            Map<String, String> customerInfoMap = new HashMap<>();
+            customerInfoMap.put("customerId", customerManagementGUI.getCustomerIdStringValue());
+            customerInfoMap.put("firstName", customerManagementGUI.getFirstNameValue());
+            customerInfoMap.put("lastName", customerManagementGUI.getLastNameValue());
+            customerInfoMap.put("address", customerManagementGUI.getAddressValue());
+            customerInfoMap.put("postalCode", customerManagementGUI.getPostalCode());
+            customerInfoMap.put("phoneNum", customerManagementGUI.getPhoneNumValue());
+            customerInfoMap.put("customerType", customerManagementGUI.getCustomerType());
+
+            return customerInfoMap;
+        }
+
+        private boolean hasNoEmptyInfo(Map<String, String> stringsMap) throws IllegalArgumentException {
+            stringsMap.values().forEach(val -> {
+                if (val.length() == 0 || val.equals("-"))
+                    throw new IllegalArgumentException("Cannot have empty customer information.");
+            });
+            return true;
+        }
+
+        private boolean hasValidCharLengths(Map<String, String> customerInfoMap) throws IllegalArgumentException {
+            if (customerInfoMap.get("firstName").length() > 20)
+                throw new IllegalArgumentException("First name cannot be greater than 20 chars.");
+            else if (customerInfoMap.get("lastName").length() > 20)
+                throw new IllegalArgumentException("Last name cannot be greater than 20 chars.");
+            else if (customerInfoMap.get("address").length() > 50)
+                throw new IllegalArgumentException("Address cannot be greater than 50 chars.");
+            else if (customerInfoMap.get("postalCode").length() > 7)
+                throw new IllegalArgumentException("Postal code cannot be greater than 7 chars.");
+            else if (customerInfoMap.get("phoneNum").length() > 12)
+                throw new IllegalArgumentException("Phone Number cannot be greater than 12 chars.");
+            else
+                return true;
         }
     }
 
@@ -99,10 +132,10 @@ public class CustomerViewController {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                int customerId = Integer.parseInt(customerManagementGUI.getCustomerIdValue());
+                int customerId = Integer.parseInt(customerManagementGUI.getCustomerIdStringValue());
                 modelController.deleteCustomer(customerId);
             } catch(NumberFormatException err) {
-                customerManagementGUI.displayErrorMessage("Customer ID must be an integer.");
+                customerManagementGUI.displayMessage("Customer ID must be an integer.");
             }
         }
     }

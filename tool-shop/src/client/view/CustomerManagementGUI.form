@@ -186,6 +186,21 @@
                             <item value="Test"/>
                             <item value="Test"/>
                             <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
+                            <item value="Test"/>
                           </model>
                           <selectionMode value="0"/>
                         </properties>
@@ -245,7 +260,10 @@
                             <preferred-size width="150" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <editable value="true"/>
+                          <text value="1"/>
+                        </properties>
                       </component>
                     </children>
                   </grid>
@@ -334,6 +352,8 @@
                           </grid>
                         </constraints>
                         <properties>
+                          <columns value="0"/>
+                          <dropMode value="USE_SELECTION"/>
                           <text value=""/>
                         </properties>
                       </component>

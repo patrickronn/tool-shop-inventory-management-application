@@ -54,6 +54,7 @@ public class CustomerManagementGUI {
 
     public void clearSearch() {
         ((DefaultListModel)searchResultsList.getModel()).clear();
+        ((DefaultListModel)searchResultsList.getModel()).addElement("<Add new customer>");
         searchParameterField.setText("");
     }
 
@@ -90,7 +91,7 @@ public class CustomerManagementGUI {
         deleteButton.addActionListener(listener);
     }
 
-    public String getCustomerIdValue() {
+    public String getCustomerIdStringValue() {
         return customerIdField.getText();
     }
 
@@ -120,9 +121,16 @@ public class CustomerManagementGUI {
 
     public String getCustomerType() {
         return String.valueOf(customerTypeComboBox.getSelectedItem());
+//
+//        if (type.equals("R")||type.equals("r"))
+//            return "Residential";
+//        else if (type.equals("C")||type.equals("c"))
+//            return "Commercial";
+//        else
+//            return "-";
     }
 
-    public void displayErrorMessage(String errorMessage) {
+    public void displayMessage(String errorMessage) {
         JOptionPane.showMessageDialog(customerManagementPanel, errorMessage);
     }
 }

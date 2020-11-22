@@ -1,8 +1,9 @@
 package client.controller.modelcontroller;
 
 import client.controller.clientcontroller.ClientController;
-import client.messagemodel.CustomerList;
+import client.messagemodel.*;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 public class ModelController {
@@ -15,7 +16,9 @@ public class ModelController {
         this.clientController = cc;
         this.serializer = s;
         this.deserializer = ds;
-        this.customerList = cl;
+//        this.customerList = cl;
+        // TODO: switch this back to aggregation now composition later
+        this.customerList = new CustomerList(new LinkedHashSet<Customer>());
     }
 
     public void sendMessage(CustomerList customerList) { // this would have inventory and potentially allow them to be null
@@ -33,13 +36,32 @@ public class ModelController {
 
     public void updateCustomer(Map<String, String> customerInfoMap) {
         System.out.println("updateCustomer() called");
-        customerInfoMap.values().stream().forEach(System.out::println);
+        customerInfoMap.values().forEach(System.out::println);
+
         // Create a temp attribute too maybe? Might be too many params
-        customerList.updateCustomerInfo(customerInfoMap);
+        customerList.updateCustomer(customerInfoMap);
+    }
+
+    public void addNewCustomer(Map<String, String> customerInfoMap) {
+        System.out.println("addNewCustomer() called");
+        Customer customer = createCustomer(customerInfoMap);
+        // Later, this would create send it to the server instead of storing it locally
     }
 
     public void deleteCustomer(int customerId) {
         System.out.println("deleteCustomer() called");
         customerList.deleteCustomer(customerId);
+    }
+
+    private Customer createCustomer(Map<String, String> customerInfoMap) {
+        switch (customerInfoMap.get("customerType")) {
+            case "Residential":
+                return new ResidentialCustomer(customerInfoMap);
+            case "Commercial":
+                return new CommercialCustomer(customerInfoMap);
+            default:
+                return null;
+
+        }
     }
 }
