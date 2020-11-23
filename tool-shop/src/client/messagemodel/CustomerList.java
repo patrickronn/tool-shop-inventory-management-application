@@ -1,9 +1,12 @@
 package client.messagemodel;
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
 
-public class CustomerList {
+public class CustomerList implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     private LinkedHashSet<Customer> customers;
 

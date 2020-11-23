@@ -1,8 +1,12 @@
 package client.messagemodel;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public abstract class Customer {
+public abstract class Customer implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     /**
      * Unique ID of a customer
      */

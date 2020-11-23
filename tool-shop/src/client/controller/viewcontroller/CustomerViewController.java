@@ -16,6 +16,8 @@ public class CustomerViewController {
     public CustomerViewController(CustomerManagementGUI gui, ModelController modelController) {
         this.customerManagementGUI = gui;
         this.modelController = modelController;
+
+        addActionListeners();
     }
 
     public void addActionListeners() {
@@ -47,11 +49,12 @@ public class CustomerViewController {
     class SearchListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String searchParamValue = customerManagementGUI.getCustomerSearchParameter();
-            String searchParamType = customerManagementGUI.getCustomerSearchParameterType();
+//            String searchParamValue = customerManagementGUI.getCustomerSearchParameter();
+//            String searchParamType = customerManagementGUI.getCustomerSearchParameterType();
+            Map<String, String> customerSearchParamMap = readSearchParamInfo();
 
-            if (isParamValid(searchParamType, searchParamValue))
-                modelController.sendCustomerSearchParam(searchParamType, searchParamValue);
+            if (isParamValid(customerSearchParamMap.get("paramType"), customerSearchParamMap.get("Value")))
+                modelController.sendCustomerSearchParam(customerSearchParamMap);
             else
                 customerManagementGUI.displayMessage("Invalid search parameter value.");
         }
@@ -73,17 +76,31 @@ public class CustomerViewController {
                     return true;
             }
         }
+
+        private Map<String, String> readSearchParamInfo() {
+            Map<String, String> customerSearchParamMap = new HashMap<>();
+            customerSearchParamMap.put("paramValue", customerManagementGUI.getCustomerSearchParameter());
+            customerSearchParamMap.put("paramType", customerManagementGUI.getCustomerSearchParameterType());
+
+            return customerSearchParamMap;
+        }
     }
 
     class SaveInfoListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                // Ensure customerId is a valid integer
+                // Check for valid customer id and read form fields
                 Integer.parseInt(customerManagementGUI.getCustomerIdStringValue());
                 Map<String, String> customerInfoMap = readCustomerInfo();
-                if (hasNoEmptyInfo(customerInfoMap) && hasValidCharLengths(customerInfoMap))
-                    modelController.updateCustomer(customerInfoMap);
+
+                // Update customer info
+                if (hasNoEmptyInfo(customerInfoMap) && hasValidCharLengths(customerInfoMap)) {
+                    if (modelController.updateCustomer(customerInfoMap))
+                        customerManagementGUI.displayMessage("Customer info successfully saved");
+                    else
+                        customerManagementGUI.displayMessage("Customer info couldn't save");
+                }
             } catch(NumberFormatException err) {
                 customerManagementGUI.displayMessage("Customer ID must be an integer.");
             } catch (IllegalArgumentException err) {
@@ -141,7 +158,7 @@ public class CustomerViewController {
     }
 
     public static void main(String[] args) {
-        CustomerViewController vc = new CustomerViewController(new CustomerManagementGUI(), new ModelController(null, null, null, null));
-        vc.addActionListeners();
+//        CustomerViewController vc = new CustomerViewController(new CustomerManagementGUI(), new ModelController(null, null, null, null));
+//        vc.addActionListeners();
     }
 }

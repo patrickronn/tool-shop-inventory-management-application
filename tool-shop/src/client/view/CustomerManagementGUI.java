@@ -130,7 +130,7 @@ public class CustomerManagementGUI {
 //            return "-";
     }
 
-    public void displayMessage(String errorMessage) {
-        JOptionPane.showMessageDialog(customerManagementPanel, errorMessage);
+    public void displayMessage(String message) {
+        JOptionPane.showMessageDialog(customerManagementPanel, message);
     }
 }

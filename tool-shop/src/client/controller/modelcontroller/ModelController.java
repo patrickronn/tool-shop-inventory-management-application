@@ -3,6 +3,7 @@ package client.controller.modelcontroller;
 import client.controller.clientcontroller.ClientController;
 import client.messagemodel.*;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -16,36 +17,53 @@ public class ModelController {
         this.clientController = cc;
         this.serializer = s;
         this.deserializer = ds;
-//        this.customerList = cl;
-        // TODO: switch this back to aggregation now composition later
-        this.customerList = new CustomerList(new LinkedHashSet<Customer>());
+        this.customerList = cl;
+        this.serializer.openObjectOutStream(this.clientController.getSocketOutStream());
+        this.deserializer.openObjectInStream(this.clientController.getSocketInStream());
     }
 
-    public void sendMessage(CustomerList customerList) { // this would have inventory and potentially allow them to be null
-        System.out.println("Serializes the model and sends through Serializer object");
-    }
-
-    public void sendCustomerSearchParam(String searchParamType, String searchParamValue) {
+    public void sendCustomerSearchParam(Map<String, String> customerSearchParamMap) {
         // Good idea to add check if last search parameter was the same as last time
         // Add attribute currentSearchParam
         // If it isn't the same, send a query to server
         System.out.println("sendSearchParam() called");
-        System.out.println("Search Param Type: " + searchParamType);
-        System.out.println("Search Param Value: " + searchParamValue);
+        System.out.println("Search Param Type: " + customerSearchParamMap.get("paramType"));
+        System.out.println("Search Param Value: " + customerSearchParamMap.get("paramValue"));
+
+        // This is incorrect, you shouldn't be casting it to Serializable
+        Message message = new Message("search", "customer", (Serializable) customerSearchParamMap);
     }
 
-    public void updateCustomer(Map<String, String> customerInfoMap) {
+    public boolean updateCustomer(Map<String, String> customerInfoMap) {
         System.out.println("updateCustomer() called");
         customerInfoMap.values().forEach(System.out::println);
 
-        // Create a temp attribute too maybe? Might be too many params
-        customerList.updateCustomer(customerInfoMap);
+        // Send customer with updated attributes
+        Customer customer = createCustomer(customerInfoMap);
+        Message message = new Message("update", "customer", customer);
+        serializer.sendMessage(message);
+
+        // Await response and return status
+        String response = deserializer.awaitResponseMessage();
+        return response.equals("success");
     }
 
-    public void addNewCustomer(Map<String, String> customerInfoMap) {
+    public int addNewCustomer(Map<String, String> customerInfoMap) {
+        // TODO: consider how to implement this in ViewController and GUI (no method for adding new customer atm)
+        // TODO: consider sending customer without an Id
         System.out.println("addNewCustomer() called");
-        Customer customer = createCustomer(customerInfoMap);
-        // Later, this would create send it to the server instead of storing it locally
+
+        // Send new customer to add
+        Customer customerSent = createCustomer(customerInfoMap);
+        Message message = new Message("insert", "customer", customerSent);
+        serializer.sendMessage(message);
+
+        // Await response and return ID assigned to new customer
+        String response = deserializer.awaitResponseMessage();
+        if (response.equals("success"))
+            return deserializer.readCustomer().getId();
+        else
+            return -1;
     }
 
     public void deleteCustomer(int customerId) {
@@ -61,7 +79,6 @@ public class ModelController {
                 return new CommercialCustomer(customerInfoMap);
             default:
                 return null;
-
         }
     }
 }

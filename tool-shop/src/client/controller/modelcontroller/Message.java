@@ -1,9 +1,27 @@
 package client.controller.modelcontroller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Message implements Serializable {
-    private String message;
-    // Add references for each object in messagemodel; consider if nulls are possible
+    private String action;
+    private String objectType;
+    private Serializable objectToSend;
+
+    public Message(String action, String objectType, Serializable objectToSend) {
+        this.action = action;
+        this.objectType = objectType;
+        this.objectToSend = objectToSend;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public String getObjectType() {
+        return objectType;
+    }
+
+    public Serializable getObjectToSend() {
+        return objectToSend;
+    }
 }
