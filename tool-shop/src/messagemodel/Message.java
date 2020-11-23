@@ -1,4 +1,4 @@
-package client.controller.modelcontroller;
+package messagemodel;
 
 import java.io.Serializable;
 
@@ -6,6 +6,8 @@ public class Message implements Serializable {
     private String action;
     private String objectType;
     private Serializable objectToSend;
+
+    static final long serialVersionUID = 1L;
 
     public Message(String action, String objectType, Serializable objectToSend) {
         this.action = action;
@@ -21,7 +23,7 @@ public class Message implements Serializable {
         return objectType;
     }
 
-    public Serializable getObjectToSend() {
+    public Serializable getObject() {
         return objectToSend;
     }
 }

@@ -1,10 +1,9 @@
 package client.controller.modelcontroller;
 
-import client.controller.clientcontroller.ClientController;
-import client.messagemodel.*;
+import client.controller.clientcontroller.*;
+import messagemodel.*;
 
-import java.io.Serializable;
-import java.util.LinkedHashSet;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ModelController {
@@ -18,29 +17,31 @@ public class ModelController {
         this.serializer = s;
         this.deserializer = ds;
         this.customerList = cl;
-        this.serializer.openObjectOutStream(this.clientController.getSocketOutStream());
-        this.deserializer.openObjectInStream(this.clientController.getSocketInStream());
+        openStreams();
     }
 
     public void sendCustomerSearchParam(Map<String, String> customerSearchParamMap) {
-        // Good idea to add check if last search parameter was the same as last time
-        // Add attribute currentSearchParam
-        // If it isn't the same, send a query to server
         System.out.println("sendSearchParam() called");
         System.out.println("Search Param Type: " + customerSearchParamMap.get("paramType"));
         System.out.println("Search Param Value: " + customerSearchParamMap.get("paramValue"));
 
-        // This is incorrect, you shouldn't be casting it to Serializable
-        Message message = new Message("search", "customer", (Serializable) customerSearchParamMap);
+        // Send customer search parameters
+        Message message = new Message("search", "CustomerList", (HashMap<String, String>) customerSearchParamMap);
+        serializer.sendMessage(message);
+
+        // Await response and return result
+        // TODO: update this to match how it's done on server side
+//        if (deserializer.awaitResponseMessage().equals("success")) {
+//            CustomerList customerList = deserializer.readMessage();
+//            for (Customer customer: customerList.getCustomers())
+//                System.out.println(customer.getFirstName() + " " + customer.getLastName() + " " + customer.getId());
+//        }
     }
 
     public boolean updateCustomer(Map<String, String> customerInfoMap) {
-        System.out.println("updateCustomer() called");
-        customerInfoMap.values().forEach(System.out::println);
-
         // Send customer with updated attributes
         Customer customer = createCustomer(customerInfoMap);
-        Message message = new Message("update", "customer", customer);
+        Message message = new Message("update", "Customer", customer);
         serializer.sendMessage(message);
 
         // Await response and return status
@@ -54,16 +55,18 @@ public class ModelController {
         System.out.println("addNewCustomer() called");
 
         // Send new customer to add
-        Customer customerSent = createCustomer(customerInfoMap);
-        Message message = new Message("insert", "customer", customerSent);
+        Customer customer = createCustomer(customerInfoMap);
+        Message message = new Message("insert", "customer", customer);
         serializer.sendMessage(message);
 
         // Await response and return ID assigned to new customer
+        // TODO: update this to match how it's done on server side
         String response = deserializer.awaitResponseMessage();
-        if (response.equals("success"))
-            return deserializer.readCustomer().getId();
-        else
-            return -1;
+//        if (response.equals("success"))
+//            return deserializer.readMessage().getObject();
+//        else
+//            return -1;
+        return 0;
     }
 
     public void deleteCustomer(int customerId) {
@@ -73,12 +76,22 @@ public class ModelController {
 
     private Customer createCustomer(Map<String, String> customerInfoMap) {
         switch (customerInfoMap.get("customerType")) {
-            case "Residential":
+            case "R":
                 return new ResidentialCustomer(customerInfoMap);
-            case "Commercial":
+            case "C":
                 return new CommercialCustomer(customerInfoMap);
             default:
                 return null;
         }
+    }
+
+    public void openStreams() {
+        this.serializer.openObjectOutStream(this.clientController.getSocketOutStream());
+        this.deserializer.openObjectInStream(this.clientController.getSocketInStream());
+    }
+
+    public void closeStreams() {
+        this.serializer.closeObjectOutStream();
+        this.deserializer.closeObjectInStream();
     }
 }

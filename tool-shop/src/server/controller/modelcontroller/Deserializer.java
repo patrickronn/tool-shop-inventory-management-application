@@ -1,4 +1,4 @@
-package client.controller.modelcontroller;
+package server.controller.modelcontroller;
 
 import messagemodel.*;
 
@@ -29,10 +29,6 @@ public class Deserializer {
             System.err.println("Error closing input stream to server.");
             System.exit(1);
         }
-    }
-
-    public String awaitResponseMessage() {
-        return (String) readObjectIn();
     }
 
     public Message readMessage() {

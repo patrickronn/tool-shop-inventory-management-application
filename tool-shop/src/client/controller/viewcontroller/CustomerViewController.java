@@ -49,11 +49,9 @@ public class CustomerViewController {
     class SearchListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            String searchParamValue = customerManagementGUI.getCustomerSearchParameter();
-//            String searchParamType = customerManagementGUI.getCustomerSearchParameterType();
             Map<String, String> customerSearchParamMap = readSearchParamInfo();
 
-            if (isParamValid(customerSearchParamMap.get("paramType"), customerSearchParamMap.get("Value")))
+            if (isParamValid(customerSearchParamMap.get("paramType"), customerSearchParamMap.get("paramValue")))
                 modelController.sendCustomerSearchParam(customerSearchParamMap);
             else
                 customerManagementGUI.displayMessage("Invalid search parameter value.");
@@ -97,9 +95,9 @@ public class CustomerViewController {
                 // Update customer info
                 if (hasNoEmptyInfo(customerInfoMap) && hasValidCharLengths(customerInfoMap)) {
                     if (modelController.updateCustomer(customerInfoMap))
-                        customerManagementGUI.displayMessage("Customer info successfully saved");
+                        customerManagementGUI.displayMessage("Customer info was successfully saved.");
                     else
-                        customerManagementGUI.displayMessage("Customer info couldn't save");
+                        customerManagementGUI.displayMessage("Customer info did not save.");
                 }
             } catch(NumberFormatException err) {
                 customerManagementGUI.displayMessage("Customer ID must be an integer.");
@@ -159,6 +157,5 @@ public class CustomerViewController {
 
     public static void main(String[] args) {
 //        CustomerViewController vc = new CustomerViewController(new CustomerManagementGUI(), new ModelController(null, null, null, null));
-//        vc.addActionListeners();
     }
 }

@@ -1,4 +1,4 @@
-package client.messagemodel;
+package messagemodel;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Map;

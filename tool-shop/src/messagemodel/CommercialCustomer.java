@@ -1,4 +1,4 @@
-package client.messagemodel;
+package messagemodel;
 
 import java.util.Map;
 

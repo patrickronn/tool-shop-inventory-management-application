@@ -1,14 +1,13 @@
-package client.controller.modelcontroller;
+package server.controller.modelcontroller;
+
+import messagemodel.*;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import messagemodel.*;
-
 public class Serializer {
-
     private ObjectOutputStream objectOut;
 
     public Serializer() {
@@ -24,21 +23,8 @@ public class Serializer {
         }
     }
 
-    public void closeObjectOutStream() {
-        try {
-            objectOut.close();
-        } catch (IOException e) {
-            System.err.println("Error closing output stream to server.");
-            System.exit(1);
-        }
-    }
-
-    /**
-     * Used to notify the server of the incoming object.
-     * @param objectType String of class type of the serializable object to send
-     */
-    private void notifyObjectType(String objectType) {
-        sendSerializableObject(objectType);
+    public void sendServerResponse(String response) {
+        sendSerializableObject(response);
     }
 
     public void sendMessage(Message message) {
@@ -54,5 +40,12 @@ public class Serializer {
         }
     }
 
-
+    public void closeObjectOutStream() {
+        try {
+            objectOut.close();
+        } catch (IOException e) {
+            System.err.println("Error closing output stream to server.");
+            System.exit(1);
+        }
+    }
 }
