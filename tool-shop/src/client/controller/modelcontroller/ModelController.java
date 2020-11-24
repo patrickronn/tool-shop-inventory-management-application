@@ -47,41 +47,57 @@ public class ModelController {
     }
 
     public boolean updateCustomer(Map<String, String> customerInfoMap) {
-        // Send customer with updated attributes
+        // TODO: Need to consider how to deal with a user updating a customer from Residential to Commercial (different types!)
         Customer customer = createCustomer(customerInfoMap);
+        if (customer == null) return false;
+
+        // Send updated customer info to server
         Message message = new Message("update", "customer", customer);
         serializer.sendMessage(message);
 
-        // Await response and return status
+        // Await response
         String response = deserializer.awaitResponseMessage();
-        return response.equals("success");
+
+        if (response.equals("success")) {
+            customerList.updateCustomer(customerInfoMap);
+            return true;
+        }
+        else return false;
     }
 
     public int addNewCustomer(Map<String, String> customerInfoMap) {
-        // TODO: consider how to implement this in ViewController and GUI (no method for adding new customer atm)
-        // TODO: consider sending customer without an Id
-        System.out.println("addNewCustomer() called");
-
-        // Send new customer to add
         Customer customer = createCustomer(customerInfoMap);
+        if (customer == null) return -1;
+
+        // Send new customer info to server
         Message message = new Message("insert", "customer", customer);
         serializer.sendMessage(message);
 
-        // Await response and return ID assigned to new customer
-        // TODO: update this to match how it's done on server side
+        // Await response and add customer with assigned ID to client's customer list
         String response = deserializer.awaitResponseMessage();
         if (response.equals("success")) {
             Customer customerWithId = (Customer) deserializer.readMessage().getObject();
             customerList.addCustomer(customerWithId);
             return customerWithId.getId();
         }
-        else
-            return -1;
+        else return -1;
     }
 
-    public void deleteCustomer(int customerId) {
-        System.out.println("deleteCustomer() called");
-        customerList.deleteCustomer(customerId);
+    public boolean deleteCustomer(Map<String, String> customerInfoMap) {
+        Customer customer = createCustomer(customerInfoMap);
+        if (customer == null) return false;
+
+        // Send server the customer to delete
+        Message message = new Message("delete", "customer", customer);
+        serializer.sendMessage(message);
+
+        // Await response and delete customer from client's customer list
+        String response = deserializer.awaitResponseMessage();
+        if (response.equals("success")) {
+            customerList.deleteCustomer(customerInfoMap);
+            return true;
+        }
+        else return false;
     }
 
     private Customer createCustomer(Map<String, String> customerInfoMap) {

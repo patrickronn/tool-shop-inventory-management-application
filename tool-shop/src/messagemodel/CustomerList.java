@@ -19,14 +19,15 @@ public class CustomerList implements Serializable {
         customers.add(customer);
     }
 
-    public void deleteCustomer(int customerId) {
+    public void deleteCustomer(Map<String, String> customerInfoMap) {
+        int customerId = Integer.parseInt(customerInfoMap.get("customerId"));
         Customer customer = searchCustomer(customerId);
         if (customer != null)
             customers.remove(customer);
     }
 
     public void updateCustomer(Map<String, String> customerInfoMap) {
-        int customerId = Integer.getInteger(customerInfoMap.get("customerId"));
+        int customerId = Integer.parseInt(customerInfoMap.get("customerId"));
         Customer customer = searchCustomer(customerId);
         if (customer != null)
             customer.setCustomerInfo(customerInfoMap);

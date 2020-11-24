@@ -182,6 +182,7 @@ public class CustomerManagementGUI {
                 break;
             case "C":
                 this.customerTypeComboBox.setSelectedIndex(2);
+                break;
             default:
                 this.customerTypeComboBox.setSelectedIndex(0);
         }
@@ -217,6 +218,11 @@ public class CustomerManagementGUI {
 
     public String getSearchResultSelected() {
         return String.valueOf(searchResultsList.getSelectedValue());
+    }
+
+    public void selectLastSearchResult() {
+        int searchResultCount = searchResultsList.getModel().getSize();
+        searchResultsList.setSelectedIndex(searchResultCount - 1);
     }
 
     public void displayMessage(String message) {

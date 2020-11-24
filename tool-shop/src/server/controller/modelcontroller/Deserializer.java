@@ -39,8 +39,8 @@ public class Deserializer {
         try {
             return objectIn.readObject();
         } catch (IOException e) {
-            System.err.println("Error while trying to deserialize customer list");
-            System.exit(1);
+            // client has disconnected or connection was lost
+            return null;
         }
         catch (ClassNotFoundException e) {
             System.err.println("Class of a serialized object cannot be found");

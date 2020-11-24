@@ -182,25 +182,6 @@
                           <dropMode value="USE_SELECTION"/>
                           <model>
                             <item value="&lt;Add new customer&gt;"/>
-                            <item value="1 Test"/>
-                            <item value="2 Test"/>
-                            <item value="3 Test"/>
-                            <item value="4 Test"/>
-                            <item value="10 Test"/>
-                            <item value="12 Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
-                            <item value="Test"/>
                           </model>
                           <selectionMode value="0"/>
                         </properties>

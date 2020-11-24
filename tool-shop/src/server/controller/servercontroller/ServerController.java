@@ -53,7 +53,6 @@ public class ServerController {
             while (true) {
                 // Wait for new client connection
                 clientSocket = serverSocket.accept();
-                System.out.println("Server: a new player client has connected on " + clientSocket.getRemoteSocketAddress());
                 addClientToPool();
             }
         } catch (IOException e) {

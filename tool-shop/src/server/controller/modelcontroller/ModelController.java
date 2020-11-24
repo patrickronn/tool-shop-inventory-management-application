@@ -20,15 +20,17 @@ public class ModelController implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Server: a new client is being managed on " + Thread.currentThread().getName());
         boolean clientConnected = true;
         while(clientConnected) {
             Message message = deserializer.readMessage();
-            if (message.getAction().equals("disconnect"))
+            if (message == null || message.getAction().equals("disconnect"))
                 clientConnected = false;
             else {
                 interpretMessage(message);
             }
         }
+        System.out.println("Server: a client has disconnected on " + Thread.currentThread().getName());
         closeStreams();
     }
 
@@ -57,18 +59,10 @@ public class ModelController implements Runnable {
                 break;
             case "insert":
                 insertCustomer(customer);
-               break;
+                break;
             case "delete":
                 deleteCustomer(customer);
-            default:
-                serializer.sendServerResponse("failed");
-        }
-    }
-
-    private void interpretCustomerListMessage(Message message) {
-        switch (message.getAction()) {
-            case "search":
-                sendCustomerList((HashMap<String, String>) message.getObject());
+                break;
             default:
                 serializer.sendServerResponse("failed");
         }
@@ -85,13 +79,23 @@ public class ModelController implements Runnable {
         System.out.println("Inserting a new customer:");
         customer.setId(100);
         serializer.sendServerResponse("success");
-        serializer.sendMessage(new Message("update", "customer", customer));
+        serializer.sendMessage(new Message("insert", "customer", customer));
     }
 
     private void deleteCustomer(Customer customer) {
         // Query DB
         System.out.println("Deleting a new customer:");
         serializer.sendServerResponse("success");
+    }
+
+    private void interpretCustomerListMessage(Message message) {
+        switch (message.getAction()) {
+            case "search":
+                sendCustomerList((HashMap<String, String>) message.getObject());
+                break;
+            default:
+                serializer.sendServerResponse("failed");
+        }
     }
 
     private void sendCustomerList(HashMap<String, String> searchParamMap) {
@@ -103,8 +107,8 @@ public class ModelController implements Runnable {
         // For testing
         LinkedHashSet<Customer> customers = new LinkedHashSet<>();
         for (int i = 1; i < 20; i++) {
-            customers.add(new ResidentialCustomer(i, "First", "Last",
-                    "Address", "PostalCode", "PhoneNum"));
+            customers.add(new ResidentialCustomer(i, "First"+i, "Last"+i,
+                    "Address"+i, "PostalCode"+i, "PhoneNum"+i));
         }
 
         CustomerList customerList = new CustomerList(customers);
