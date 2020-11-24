@@ -169,7 +169,7 @@ public class CustomerViewController {
 
         private void updateCustomer(Map<String, String> customerInfoMap) {
             try {
-                assertValidCustomerId();
+                Integer.parseInt(customerManagementGUI.getCustomerIdStringValue());
                 assertNoEmptyInfo(customerInfoMap);
                 assertValidCharLengths(customerInfoMap);
 
@@ -213,10 +213,6 @@ public class CustomerViewController {
             }
         }
 
-        private void assertValidCustomerId() throws NumberFormatException {
-            Integer.parseInt(customerManagementGUI.getCustomerIdStringValue());
-        }
-
         private void assertNoEmptyInfo(Map<String, String> stringsMap) throws IllegalArgumentException {
             stringsMap.values().forEach(val -> {
                 if (val.length() == 0 || val.equals("-"))
@@ -242,7 +238,7 @@ public class CustomerViewController {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                assertValidCustomerId();
+                Integer.parseInt(customerManagementGUI.getCustomerIdStringValue());
                 Map<String, String> customerInfoMap = readCustomerInfo();
                 boolean deleteSucceeded = modelController.deleteCustomer(customerInfoMap);
                 if (deleteSucceeded) {
@@ -255,10 +251,6 @@ public class CustomerViewController {
             } catch(NumberFormatException err) {
                 customerManagementGUI.displayMessage("No customer selected.");
             }
-        }
-
-        private void assertValidCustomerId() throws NumberFormatException {
-            Integer.parseInt(customerManagementGUI.getCustomerIdStringValue());
         }
     }
 

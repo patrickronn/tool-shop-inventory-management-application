@@ -15,6 +15,6 @@ public class ClientMain {
         Serializer serializer = new Serializer();
         Deserializer deserializer = new Deserializer();
         ModelController modelController = new ModelController(clientController, serializer, deserializer, customerList);
-        ViewController viewController = new ViewController(modelController);
+        new ViewController(modelController);
     }
 }
