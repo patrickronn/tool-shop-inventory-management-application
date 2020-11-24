@@ -1,5 +1,6 @@
 package messagemodel;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -39,8 +40,20 @@ public class CustomerList implements Serializable {
         return null;
     }
 
-    public LinkedHashSet<Customer> getCustomers() {
-        return customers;
+    public Map<String, String> getCustomerInfo(int customerId) {
+        Customer customer = searchCustomer(customerId);
+        if (customer != null)
+            return customer.getCustomerInfoMap();
+        else
+            return null;
+    }
+
+    public ArrayList<String> getCustomerStringList() {
+        ArrayList<String> customerStringList = new ArrayList<>();
+        for (Customer customer: customers)
+            customerStringList.add(customer.toString());
+
+        return customerStringList;
     }
 
     public void setCustomers(LinkedHashSet<Customer> customers) {

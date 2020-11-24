@@ -1,6 +1,7 @@
 package messagemodel;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Customer implements Serializable {
@@ -70,6 +71,23 @@ public abstract class Customer implements Serializable {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Map<String, String> getCustomerInfoMap() {
+        Map<String, String> customerInfoMap = new HashMap<>();
+        customerInfoMap.put("customerId", String.valueOf(this.id));
+        customerInfoMap.put("firstName", this.firstName);
+        customerInfoMap.put("lastName", this.lastName);
+        customerInfoMap.put("address", this.address);
+        customerInfoMap.put("postalCode", this.postalCode);
+        customerInfoMap.put("phoneNum", this.phoneNum);
+        customerInfoMap.put("customerType", this.type);
+
+        return customerInfoMap;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -112,5 +130,10 @@ public abstract class Customer implements Serializable {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return (id + " " + firstName + " " + lastName + " " + type);
     }
 }

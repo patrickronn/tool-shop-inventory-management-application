@@ -3,8 +3,11 @@ package client.controller.viewcontroller;
 import client.controller.modelcontroller.ModelController;
 import client.view.CustomerManagementGUI;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +27,8 @@ public class CustomerViewController {
         customerManagementGUI.addClearSearchListener(new ClearSearchListener());
         customerManagementGUI.addClearCustInfoListener(new ClearCustomerInfoListener());
         customerManagementGUI.addDeleteButtonListener(new CustomerDeleteListener());
-        customerManagementGUI.addCustomerSearchListener(new SearchListener());
+        customerManagementGUI.addCustomerSearchListener(new SearchParamListener());
+        customerManagementGUI.addSearchResultsListener(new SearchResultSelectionListener());
         customerManagementGUI.addSaveButtonListener(new SaveInfoListener());
     }
 
@@ -35,7 +39,11 @@ public class CustomerViewController {
     class ClearSearchListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            customerManagementGUI.clearSearch();
+            customerManagementGUI.clearSearchResults();
+            customerManagementGUI.clearSearchParam();
+            customerManagementGUI.clearCustomerId();
+            customerManagementGUI.clearCustomerInfo();
+            customerManagementGUI.disableCustomerInfo();
         }
     }
 
@@ -46,13 +54,15 @@ public class CustomerViewController {
         }
     }
 
-    class SearchListener implements ActionListener {
+    class SearchParamListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             Map<String, String> customerSearchParamMap = readSearchParamInfo();
 
-            if (isParamValid(customerSearchParamMap.get("paramType"), customerSearchParamMap.get("paramValue")))
-                modelController.sendCustomerSearchParam(customerSearchParamMap);
+            if (isParamValid(customerSearchParamMap.get("paramType"), customerSearchParamMap.get("paramValue"))) {
+                modelController.requestCustomerList(customerSearchParamMap);
+                loadSearchResults(modelController.getAllCustomerStrings());
+            }
             else
                 customerManagementGUI.displayMessage("Invalid search parameter value.");
         }
@@ -75,12 +85,61 @@ public class CustomerViewController {
             }
         }
 
+        private void loadSearchResults(ArrayList<String> searchResults) {
+            customerManagementGUI.clearSearchResults();
+            for (String searchResult: searchResults)
+                customerManagementGUI.addSearchResult(searchResult);
+        }
+
         private Map<String, String> readSearchParamInfo() {
             Map<String, String> customerSearchParamMap = new HashMap<>();
             customerSearchParamMap.put("paramValue", customerManagementGUI.getCustomerSearchParameter());
             customerSearchParamMap.put("paramType", customerManagementGUI.getCustomerSearchParameterType());
 
             return customerSearchParamMap;
+        }
+    }
+
+    class SearchResultSelectionListener implements ListSelectionListener {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                customerManagementGUI.enableCustomerInfo();
+                String searchResultSelected = customerManagementGUI.getSearchResultSelected();
+                if (searchResultSelected.equals(customerManagementGUI.getNewCustomerString())) {
+                    customerManagementGUI.setNewCustomerFlag(true);
+                    customerManagementGUI.clearCustomerId();
+                    customerManagementGUI.clearCustomerInfo();
+                }
+                else if (!searchResultSelected.equals("null")) {
+                    customerManagementGUI.setNewCustomerFlag(false);
+                    int customerId = extractCustomerId(searchResultSelected);
+                    if (customerId > 0)
+                        setGUICustomerInfo(modelController.getCustomerInfo(customerId));
+                }
+            }
+        }
+
+        private int extractCustomerId(String searchResultSelected) {
+            try {
+                String[] stringArr = searchResultSelected.split(" ");
+                return Integer.parseInt(stringArr[0]);
+            } catch (NumberFormatException e) {
+                customerManagementGUI.displayMessage("Cannot find customer id in:" + searchResultSelected);
+                return -1;
+            }
+        }
+
+        private void setGUICustomerInfo(Map<String, String> customerInfoMap) {
+            if (customerInfoMap != null) {
+                customerManagementGUI.setCustomerIdStringValue(customerInfoMap.get("customerId"));
+                customerManagementGUI.setFirstNameValue(customerInfoMap.get("firstName"));
+                customerManagementGUI.setLastNameValue(customerInfoMap.get("lastName"));
+                customerManagementGUI.setAddressValue(customerInfoMap.get("address"));
+                customerManagementGUI.setPostalCodeValue(customerInfoMap.get("postalCode"));
+                customerManagementGUI.setPhoneNumValue(customerInfoMap.get("phoneNum"));
+                customerManagementGUI.setCustomerTypeValue(customerInfoMap.get("customerType"));
+            }
         }
     }
 
@@ -94,7 +153,8 @@ public class CustomerViewController {
 
                 // Update customer info
                 if (hasNoEmptyInfo(customerInfoMap) && hasValidCharLengths(customerInfoMap)) {
-                    if (modelController.updateCustomer(customerInfoMap))
+                    boolean updateSucceeded = modelController.updateCustomer(customerInfoMap);
+                    if (updateSucceeded)
                         customerManagementGUI.displayMessage("Customer info was successfully saved.");
                     else
                         customerManagementGUI.displayMessage("Customer info did not save.");
