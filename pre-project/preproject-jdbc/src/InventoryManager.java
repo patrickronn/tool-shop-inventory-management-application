@@ -13,6 +13,8 @@ import java.util.Scanner;
 // This program allows you to create and manage a store inventory database.
 // It creates a database and datatable, then populates that table with tools from
 // items.txt.
+
+// Completed by: Patrick Linang
 public class InventoryManager {
 	
 	public Connection jdbc_connection;
