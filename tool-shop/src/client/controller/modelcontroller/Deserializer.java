@@ -44,10 +44,12 @@ public class Deserializer {
             return objectIn.readObject();
         } catch (IOException e) {
             System.err.println("Error while trying to deserialize customer list");
+            closeObjectInStream();
             System.exit(1);
         }
         catch (ClassNotFoundException e) {
             System.err.println("Class of a serialized object cannot be found");
+            closeObjectInStream();
             System.exit(1);
         }
         return null;

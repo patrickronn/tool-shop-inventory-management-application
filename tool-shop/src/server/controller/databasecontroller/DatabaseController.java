@@ -18,11 +18,20 @@ public class DatabaseController implements DBConstants {
         orderDBController = new OrderDBController();
     }
 
+    public LinkedHashSet<Item> getItems(String searchParam, String searchValue) {
+        ResultSet inventoryToolsResult = inventoryDBController.getInventoryToolResultSet(searchParam, searchValue);
+        if (inventoryToolsResult != null)
+            return convertItemListResultSet(inventoryToolsResult);
+        else
+            throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
+    }
+
     public CustomerList getCustomerList(String searchParam, String searchValue) {
         ResultSet customerListResult = customerDBController.getCustomerListResultSet(searchParam, searchValue);
         if (customerListResult != null)
             return convertCustomerListResultSet(customerListResult);
-        throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
+        else
+            throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
     }
 
     public int insertCustomer(Customer customer) {
@@ -39,15 +48,50 @@ public class DatabaseController implements DBConstants {
         return customerDBController.deleteCustomer(customerInfoMap);
     }
 
+    private LinkedHashSet<Item> convertItemListResultSet(ResultSet inventoryToolsResult) {
+        try {
+            LinkedHashSet<Item> items = new LinkedHashSet<>();
+            while (inventoryToolsResult.next())
+                items.add(convertItemResultSet(inventoryToolsResult));
+            inventoryToolsResult.close();
+            return items;
+        } catch (SQLException e) {
+            System.err.println("System: error converting ResultSet to Inventory.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Item convertItemResultSet(ResultSet itemResult) {
+        try {
+            int id = itemResult.getInt("ToolId");
+            String name = itemResult.getString("Name");
+            String type = itemResult.getString("Type");
+            int quantity = itemResult.getInt("Quantity");
+            double price = itemResult.getDouble("Price");
+            int supplierId = itemResult.getInt("SupplierId");
+            String powerType = itemResult.getString("PowerType");
+
+            if (type.equals("Electrical"))
+                return new ElectricalItem(id, name, quantity, price, supplierId, powerType);
+            else
+                return new NonElectricalItem(id, name, quantity, price, supplierId);
+        } catch (SQLException e) {
+            System.err.println("System: error converting ResultSet to Item object");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private CustomerList convertCustomerListResultSet(ResultSet customerListResult) {
         try {
             LinkedHashSet<Customer> customers = new LinkedHashSet<>();
-            while(customerListResult.next())
+            while (customerListResult.next())
                 customers.add(convertCustomerResultSet(customerListResult));
             customerListResult.close();
             return new CustomerList(customers);
         } catch (SQLException e) {
-            System.err.println("System: error converting SQL query to CustomerList");
+            System.err.println("System: error converting ResultSet to CustomerList");
             e.printStackTrace();
             return null;
         }
@@ -69,7 +113,7 @@ public class DatabaseController implements DBConstants {
             else
                 return null;
         } catch (SQLException e) {
-            System.err.println("System: error converting SQL query to Customer object");
+            System.err.println("System: error converting ResultSet to Customer object");
             e.printStackTrace();
             return null;
         }
@@ -77,12 +121,19 @@ public class DatabaseController implements DBConstants {
 
     public void close() {
         customerDBController.close();
+        inventoryDBController.close();
     }
 
     public static void main(String[] args) {
         DatabaseController dbcontroller = new DatabaseController();
         CustomerList customerList = dbcontroller.getCustomerList("lastName", "Smith");
         System.out.println(customerList.getCustomerStringList());
+
+        dbcontroller = new DatabaseController();
+        LinkedHashSet<Item> items = dbcontroller.getItems("toolId", "all");
+        for (Item item: items) {
+            System.out.println(item);
+        }
         dbcontroller.close();
     }
 }

@@ -19,10 +19,14 @@ public class InventoryModelController {
         this.inventory = inventory;
     }
 
+    public Map<String, String> getItemInfo(Map<String, String> inventorySearchParamMap) {
+       return inventory.searchItemStringMap(inventorySearchParamMap);
+    }
+
+    @SuppressWarnings("unchecked")
     public boolean requestInventory(Map<String, String> inventorySearchParamMap) {
-        /*
         // Send inventory search parameters
-        Message message = new Message("search", "inventory", (HashMap<String, String>)inventorySearchParamMap);
+        Message message = new Message("search", "inventory", (HashMap<String, String>) inventorySearchParamMap);
         serializer.sendMessage(message);
 
         // Await response and store results
@@ -33,19 +37,19 @@ public class InventoryModelController {
             return true;
         }
         else return false;
-        */
 
-        // For testing
-        System.out.println("Request inventory from server.");
-        ElectricalItem item1 = new ElectricalItem(1, "Phone Tool", 10, 43.95, "100 W");
-        NonElectricalItem item2 = new NonElectricalItem(2, "Dowel", 200, 10.20);
-        LinkedHashSet<Item> items = new LinkedHashSet<>();
-        items.add(item1);
-        items.add(item2);
-        this.inventory = new Inventory(items, new Order());
-        return true;
+//        // For testing
+//        System.out.println("Request inventory from server.");
+//        ElectricalItem item1 = new ElectricalItem(1, "Phone Tool", 10, 43.95, "100 W");
+//        NonElectricalItem item2 = new NonElectricalItem(2, "Dowel", 200, 10.20);
+//        LinkedHashSet<Item> items = new LinkedHashSet<>();
+//        items.add(item1);
+//        items.add(item2);
+//        this.inventory = new Inventory(items, new Order());
+//        return true;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean decreaseQuantity(Map<String, String> itemDecreaseParamMap) {
 //        // Send item decrease parameters
 //        Message message = new Message("decrease", "item", (HashMap<String, String>)itemDecreaseParamMap);

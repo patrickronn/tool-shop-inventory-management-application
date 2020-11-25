@@ -88,6 +88,21 @@ public class Inventory implements Serializable {
         return null;
     }
 
+    public Map<String, String> searchItemStringMap(Map<String, String> itemSearchParam) {
+        String paramType = itemSearchParam.get("paramType");
+        String paramValue = itemSearchParam.get("paramValue");
+
+        Item item = null;
+        if (paramType.equals("ToolId")) {
+            item = searchItem(Integer.parseInt(paramValue));
+        }
+        else if (paramType.equals("Name"))
+            item = searchItem(paramValue);
+
+        if (item != null) {return item.toMap();}
+        else {return null;}
+    }
+
     public int getItemQuantity(int id) {
         Item item = searchItem(id);
         if (item != null)

@@ -3,7 +3,7 @@ package client.view;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class OrderForm extends JDialog {
+public class OrderDialog extends JDialog {
     private JPanel orderPane;
     private JButton buttonOK;
     private JTextArea orderTextArea;
@@ -11,7 +11,7 @@ public class OrderForm extends JDialog {
     private JPanel orderBodyPanel;
     private JScrollPane orderScrollPane;
 
-    public OrderForm(String orderString) {
+    public OrderDialog(String orderString) {
         setContentPane(orderPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -50,7 +50,7 @@ public class OrderForm extends JDialog {
     }
 
     public static void main(String[] args) {
-        OrderForm dialog = new OrderForm("Test Order Here");
+        OrderDialog dialog = new OrderDialog("Test Order Here");
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);

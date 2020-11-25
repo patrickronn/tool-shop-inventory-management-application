@@ -9,6 +9,7 @@ public class ModelController implements Runnable {
     Serializer serializer;
     Deserializer deserializer;
     CustomerModelController customerModelController;
+    InventoryModelController inventoryModelController;
     DatabaseController databaseController;
 
     public ModelController(ServerController sc, Serializer s, Deserializer ds, DatabaseController dbc) {
@@ -18,6 +19,7 @@ public class ModelController implements Runnable {
         this.databaseController = dbc;
 
         this.customerModelController = new CustomerModelController(s, ds, dbc);
+        this.inventoryModelController = new InventoryModelController(s, ds, dbc);
         openStreams();
     }
 
@@ -40,11 +42,14 @@ public class ModelController implements Runnable {
     private void interpretMessage(Message message) {
         try {
             switch (message.getObjectType().toLowerCase()) {
-                case ("customer"):
+                case "customer":
                     customerModelController.interpretCustomerMessage(message);
                     break;
-                case ("customerlist"):
+                case "customerlist":
                     customerModelController.interpretCustomerListMessage(message);
+                    break;
+                case "inventory":
+                    inventoryModelController.interpretInventoryMessage(message);
                     break;
                 default:
                     System.out.println("Server: cannot interpret incoming message..");

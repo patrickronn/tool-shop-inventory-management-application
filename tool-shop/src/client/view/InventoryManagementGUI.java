@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 public class InventoryManagementGUI {
     private JPanel inventoryManagementPanel;
     private JPanel buttonPanel;
-    private JButton showAllToolsButton;
+    private JButton loadAllToolsButton;
     private JButton searchByNameButton;
     private JButton searchByIDButton;
     private JPanel resultsPanel;
@@ -18,20 +18,40 @@ public class InventoryManagementGUI {
     private JButton viewOrderButton;
     private JFrame frame;
 
+    private boolean inventoryLoaded;
+
     public InventoryManagementGUI() {
         frame = new JFrame("CustomerManagementGUI");
         frame.setContentPane(this.inventoryManagementPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        inventoryLoaded = false;
+        setButtonsClickable(false);
     }
 
     public void close() {
         frame.dispose();
     }
 
-    public void addShowAllToolsListener(ActionListener listener) {
-        showAllToolsButton.addActionListener(listener);
+    public boolean isInventoryLoaded() {
+        return inventoryLoaded;
+    }
+
+    public void setInventoryLoaded(boolean condition) {
+        inventoryLoaded = condition;
+        setButtonsClickable(condition);
+    }
+
+    public void setButtonsClickable(boolean condition) {
+        searchByIDButton.setEnabled(condition);
+        searchByNameButton.setEnabled(condition);
+        viewOrderButton.setEnabled(condition);
+        decreaseQuantityButton.setEnabled(condition);
+    }
+
+    public void addLoadAllToolsListener(ActionListener listener) {
+        loadAllToolsButton.addActionListener(listener);
     }
 
     public void addSearchByNameListener(ActionListener listener) {

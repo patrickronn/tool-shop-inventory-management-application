@@ -1,16 +1,13 @@
 package server.model;
 
+import messagemodel.CustomerList;
 import messagemodel.Inventory;
 import messagemodel.Item;
 import messagemodel.Order;
 
-// TODO: convert these to return values and objects to the ModelController
+// TODO: this should also manage linking OrderLines with their respective Supplier object
 /**
- * This class represents a shop consisting of an inventory of tool items for sale and a supplier list.
- *
- * This class provides the primary point of interaction with any front-end interfaces.
- * Shop's methods returns string values for query results and informative messages.
- * Also uses FileMgr for reading item and supplier instances.
+ * This class represents a shop consisting of an inventory of tool items for sale, supplier list, and customer list.
  *
  * @author Patrick Linang
  * @since October 10, 2020
@@ -26,29 +23,16 @@ public class ShopManager {
      */
     private SupplierList supplierList;
 
+    /**
+     * A list of customers who buy from the shop.
+     */
+    private CustomerList customerList;
 
-    public ShopManager(Inventory inventory, SupplierList supplierList) { // add CustomerList argument later
+    public ShopManager(Inventory inventory, SupplierList supplierList, CustomerList customerList) {
         setInventory(inventory);
         setSupplierList(supplierList);
+        setCustomerList(customerList);
     }
-
-//    /**
-//     * Constructs a ShopManager object by loading a supplier list and inventory from specified text files.
-//     *
-//     * Uses FileMgr to handle file reading.
-//     *
-//     * @param supplierListFileName String name of file containing all suppliers (e.g. suppliers.txt)
-//     * @param inventoryFileName String name of file containing all items (e.g. items.txt)
-//     */
-//    public ShopManager(String supplierListFileName, String inventoryFileName) {
-//        SupplierList supplierList = FileMgr.loadSupplierList(supplierListFileName);
-//        setSupplierList(supplierList);
-//
-//        Inventory inventory = FileMgr.loadInventory(inventoryFileName, supplierList);
-//        setInventory(inventory);
-//    }
-
-
 
     /**
      * Produces a list of all the shop's items.
@@ -176,5 +160,21 @@ public class ShopManager {
      */
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+    }
+
+    /**
+     * Getter method.
+     * @return a reference to the shop's CustomerList object
+     */
+    public CustomerList getCustomerList() {
+        return customerList;
+    }
+
+    /**
+     * Setter method.
+     * @param customerList a new CustomerList object to assign to the shop
+     */
+    public void setCustomerList(CustomerList customerList) {
+        this.customerList = customerList;
     }
 }

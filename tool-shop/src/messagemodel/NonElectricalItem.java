@@ -10,7 +10,7 @@ public class NonElectricalItem extends Item {
      * @param quantity current item stock available as an integer
      * @param price price of an item (Example format: '12.43')
      */
-    public NonElectricalItem(int id, String name, int quantity, double price) {
-        super(id, name, quantity, price, "Non-Electrical");
+    public NonElectricalItem(int id, String name, int quantity, double price, int supplierId) {
+        super(id, name, quantity, price, supplierId, "Non-Electrical");
     }
 }

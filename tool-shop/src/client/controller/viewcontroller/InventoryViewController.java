@@ -4,7 +4,8 @@ import client.controller.modelcontroller.Deserializer;
 import client.controller.modelcontroller.InventoryModelController;
 import client.controller.modelcontroller.Serializer;
 import client.view.InventoryManagementGUI;
-import client.view.OrderForm;
+import client.view.ItemInfoDialog;
+import client.view.OrderDialog;
 import messagemodel.Inventory;
 import messagemodel.Item;
 import messagemodel.Order;
@@ -30,45 +31,52 @@ public class InventoryViewController {
     }
 
     public void addActionListeners() {
-        inventoryManagementGUI.addShowAllToolsListener(new SearchButtonListener("ToolId", true));
-        inventoryManagementGUI.addSearchByIdListener(new SearchButtonListener("ToolId", false));
-        inventoryManagementGUI.addSearchByNameListener(new SearchButtonListener("Name", false));
+        inventoryManagementGUI.addLoadAllToolsListener(new LoadAllToolsListener());
+        inventoryManagementGUI.addSearchByIdListener(new SearchToolInfoListener("ToolId"));
+        inventoryManagementGUI.addSearchByNameListener(new SearchToolInfoListener("Name"));
         inventoryManagementGUI.addInventoryResultsListener(new SearchResultSelectionListener());
         inventoryManagementGUI.addViewOrderListener(new ViewOrderButtonListener());
         inventoryManagementGUI.addDecreaseQuantityListener(new DecreaseQuantityButtonListener());
     }
 
-    class SearchButtonListener implements ActionListener {
+    class SearchToolInfoListener implements ActionListener {
         private String paramType;
         private String paramValue;
-        private boolean searchAll;
 
-        public SearchButtonListener(String paramType, boolean searchAll) {
+        public SearchToolInfoListener(String paramType) {
             this.paramType = paramType;
-            this.searchAll = searchAll;
-            if (searchAll) this.paramValue = "all";
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            // Get user input for search parameter value if needed
-            if (!searchAll) {getParamValueInput();}
+            // Get user input for search parameter value
+            getParamValueInput();
 
             // Send search parameters to inventory
-            Map<String, String> inventorySearchParamMap = new HashMap<>();
-            inventorySearchParamMap.put("paramType", paramType);
-            inventorySearchParamMap.put("paramValue", paramValue);
+            Map<String, String> itemSearchParam = new HashMap<>();
+            itemSearchParam.put("paramType", paramType);
+            itemSearchParam.put("paramValue", paramValue);
 
-            // Update the GUI search results if successful
-            boolean requestSucceeded = inventoryModelController.requestInventory(inventorySearchParamMap);
-            if (requestSucceeded) {
-                ArrayList<String> inventoryStringList = inventoryModelController.getInventoryStringList();
-                inventoryManagementGUI.clearSearchResults();
-                for (String itemString: inventoryStringList)
-                    inventoryManagementGUI.addToolSearchResult(itemString);
-                inventoryManagementGUI.displayMessage("Inventory tool list updated.");
-            }
-            else {inventoryManagementGUI.displayMessage("Inventory tool list couldn't be retrieved.");}
+            Map<String, String> itemInfoMap = inventoryModelController.getItemInfo(itemSearchParam);
+            if (itemInfoMap != null) {
+                ItemInfoDialog dialog = new ItemInfoDialog();
+                displayItemInfoToDialog(dialog, itemInfoMap);
+                dialog.pack();
+                dialog.setVisible(true);
+            } else inventoryManagementGUI.displayMessage("Cannot find item with " + paramType + ": " + paramValue);
+        }
+
+        private void displayItemInfoToDialog(ItemInfoDialog dialog, Map<String, String> itemInfoMap) {
+            dialog.setToolId(itemInfoMap.get("toolId"));
+            dialog.setToolName(itemInfoMap.get("name"));
+            dialog.setQuantity(itemInfoMap.get("quantity"));
+            dialog.setPrice("$ " + itemInfoMap.get("price"));
+            dialog.setType(itemInfoMap.get("toolType"));
+            dialog.setSupplierId(itemInfoMap.get("supplierId"));
+
+            String powerType = itemInfoMap.get("powerType");
+            if (powerType != null) dialog.setPowerType(powerType);
+            else dialog.setPowerType("N/A");
         }
 
         private void getParamValueInput() {
@@ -86,6 +94,35 @@ public class InventoryViewController {
                 return false;
             } catch (NumberFormatException e) {
                 return true;
+            }
+        }
+    }
+
+    class LoadAllToolsListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            // Send search parameters to inventory
+            Map<String, String> inventorySearchParamMap = new HashMap<>();
+            inventorySearchParamMap.put("paramType", "inventory");
+            inventorySearchParamMap.put("paramValue", "all");
+
+            // Update the GUI search results if successful
+            boolean requestSucceeded = inventoryModelController.requestInventory(inventorySearchParamMap);
+            if (requestSucceeded) {
+                ArrayList<String> inventoryStringList = inventoryModelController.getInventoryStringList();
+                inventoryManagementGUI.clearSearchResults();
+                for (String itemString: inventoryStringList)
+                    inventoryManagementGUI.addToolSearchResult(itemString);
+                inventoryManagementGUI.displayMessage("Inventory tool list updated.");
+
+                if (!inventoryManagementGUI.isInventoryLoaded())
+                    inventoryManagementGUI.setInventoryLoaded(true);
+            }
+            else {
+                inventoryManagementGUI.displayMessage("Inventory tool list couldn't be retrieved.");
+                inventoryManagementGUI.setInventoryLoaded(false);
             }
         }
     }
@@ -124,7 +161,7 @@ public class InventoryViewController {
         @Override
         public void actionPerformed(ActionEvent e) {
             String orderString = inventoryModelController.getCurrentOrder();
-            OrderForm dialog = new OrderForm(orderString);
+            OrderDialog dialog = new OrderDialog(orderString);
             dialog.pack();
             dialog.setVisible(true);
         }

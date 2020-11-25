@@ -1,6 +1,10 @@
 package messagemodel;
 
+import server.model.Supplier;
+
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Each object of this class represents a type of item sold by the shop.
@@ -39,6 +43,11 @@ public abstract class Item implements Serializable {
      */
     protected String type;
 
+    /**
+     * The supplier ID, which gets updated whenever a Supplier is assigned to the item.
+     */
+    protected int supplierId;
+
 
     /**
      * Constructs an item based on its description and availability.
@@ -51,12 +60,25 @@ public abstract class Item implements Serializable {
      * @param price price of an item (Example format: '12.43')
      * @param type type of item (e.g. 'Electrical' or 'Non-Electrical')
      */
-    protected Item(int id, String name, int quantity, double price, String type) {
+    protected Item(int id, String name, int quantity, double price, int supplierId, String type) {
         setId(id);
         setName(name);
         setQuantity(quantity);
         setPrice(price);
+        setSupplierId(supplierId);
         setType(type);
+    }
+
+    public Map<String, String> toMap() {
+        Map<String, String> customerInfoMap = new HashMap<>();
+        customerInfoMap.put("toolId", String.valueOf(id));
+        customerInfoMap.put("name", name);
+        customerInfoMap.put("quantity", String.valueOf(quantity));
+        customerInfoMap.put("price", String.format("%.2f", price));
+        customerInfoMap.put("toolType", type);
+        customerInfoMap.put("supplierId", String.valueOf(supplierId));
+
+        return customerInfoMap;
     }
 
     /**
@@ -179,4 +201,21 @@ public abstract class Item implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
+    /**
+     * Setter method
+     * @param supplierId the new supplier Id of this item
+     */
+    public void setSupplierId(int supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    /**
+     * Getter method.
+     * @return id of the item supplier
+     */
+    public int getSupplierId() {
+        return this.supplierId;
+    }
+
 }
