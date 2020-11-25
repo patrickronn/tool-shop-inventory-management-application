@@ -18,10 +18,6 @@ public class CustomerModelController {
     }
 
     public void requestCustomerList(Map<String, String> customerSearchParamMap) {
-        System.out.println("requestCustomerList() called");
-        System.out.println("Search Param Type: " + customerSearchParamMap.get("paramType"));
-        System.out.println("Search Param Value: " + customerSearchParamMap.get("paramValue"));
-
         // Send customer search parameters
         Message message = new Message("search", "customerlist", (HashMap<String, String>) customerSearchParamMap);
         serializer.sendMessage(message);
@@ -34,7 +30,7 @@ public class CustomerModelController {
         }
     }
 
-    public ArrayList<String> getAllCustomerStrings() {
+    public ArrayList<String> getCustomerStringList() {
         return customerList.getCustomerStringList();
     }
 

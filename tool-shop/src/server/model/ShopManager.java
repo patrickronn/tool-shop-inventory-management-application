@@ -1,6 +1,8 @@
 package server.model;
 
-import server.model.messagemodel.*;
+import messagemodel.Inventory;
+import messagemodel.Item;
+import messagemodel.Order;
 
 // TODO: convert these to return values and objects to the ModelController
 /**

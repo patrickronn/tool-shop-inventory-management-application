@@ -1,4 +1,6 @@
-package server.model.messagemodel;
+package messagemodel;
+
+import java.io.Serializable;
 
 /**
  * Each object of this class represents a type of item sold by the shop.
@@ -6,9 +8,12 @@ package server.model.messagemodel;
  * Item have a reference to the item's supplier and also has a method for generating new order line based on an item.
  *
  * @author Patick Linang
- * @since October 10, 2020
+ * @since November 25, 2020
  */
-public abstract class Item {
+public abstract class Item implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     /**
      * Unique ID of an item.
      */
@@ -44,6 +49,7 @@ public abstract class Item {
      * @param name String name of the item
      * @param quantity current item stock available as an integer
      * @param price price of an item (Example format: '12.43')
+     * @param type type of item (e.g. 'Electrical' or 'Non-Electrical')
      */
     protected Item(int id, String name, int quantity, double price, String type) {
         setId(id);
@@ -90,7 +96,7 @@ public abstract class Item {
      */
     @Override
     public String toString() {
-        return "Item - ID: " + id +
+        return "ID: " + id +
                 ", Name: " + name +
                 ", Quantity: " + quantity +
                 ", Price: " + price +

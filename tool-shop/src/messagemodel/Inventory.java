@@ -1,5 +1,7 @@
-package server.model.messagemodel;
+package messagemodel;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 /**
@@ -10,9 +12,12 @@ import java.util.LinkedHashSet;
  * Includes methods for searching items and decreasing quantity of a specific item.
  *
  * @author Patrick Linang
- * @since October 10, 2020
+ * @since November 25, 2020
  */
-public class Inventory {
+public class Inventory implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     /**
      * A collection of all available items for sale.
      */
@@ -86,7 +91,7 @@ public class Inventory {
      * Decreases the quantity of an item in the inventory and can update the order if required.
      *
      * If the quantity of the item to decrease is less than MIN_QUANTITY, the Order object must be updated.
-     * By default, it will place an order to restock up to RESTOCK_QUANTITY (as per previous Lab 2 specification)
+     * By default, it will place an order to restock up to RESTOCK_QUANTITY (as per previous Lab 2 specification).
      *
      * @param item the Item object to decrease
      * @param quantityToRemove the amount to decrease an item's quantity by (cannot be more than current quantity)
@@ -128,6 +133,14 @@ public class Inventory {
         sb.deleteCharAt(sb.length()-1);
 
         return sb.toString();
+    }
+
+    public ArrayList<String> getInventoryStringList() {
+        ArrayList<String> inventoryStringList = new ArrayList<>();
+        for (Item item: items)
+            inventoryStringList.add(item.toString());
+
+        return inventoryStringList;
     }
 
     /**

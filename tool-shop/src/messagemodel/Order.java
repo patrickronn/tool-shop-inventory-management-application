@@ -1,5 +1,6 @@
-package server.model.messagemodel;
+package messagemodel;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 
 /**
@@ -9,9 +10,12 @@ import java.util.LinkedHashSet;
  * and keep track of order date.
  *
  * @author Patrick Linang
- * @since October 10, 2020
+ * @since November 25, 2020
  */
-public class Order {
+public class Order implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     /**
      * Accumulates order lines for any item that should be ordered.
      */
@@ -30,7 +34,7 @@ public class Order {
     /**
      * Constant integer representing the smallest ID value possible.
      */
-    private final static int MIN_ID = 0;
+    private final static int MIN_ID = 10000;
 
     /**
      * Constant integer representing the largest ID value possible
@@ -102,7 +106,7 @@ public class Order {
      * @return an randomized ID value as an integer
      */
     private int generateId() {
-        return (int) (Math.random() * (MAX_ID - MIN_ID + 1));
+        return (int) (Math.random() * (MAX_ID - MIN_ID + 1) + MIN_ID);
     }
 
     /**

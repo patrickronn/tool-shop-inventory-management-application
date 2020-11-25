@@ -1,6 +1,7 @@
 package server.model;
 
-import server.model.messagemodel.*;
+import messagemodel.Item;
+
 import java.util.LinkedHashSet;
 
 /**

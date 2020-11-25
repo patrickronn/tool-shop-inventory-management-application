@@ -1,4 +1,4 @@
-package server.model.messagemodel;
+package messagemodel;
 
 public class ElectricalItem extends Item {
     /**

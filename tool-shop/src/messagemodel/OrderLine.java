@@ -1,12 +1,17 @@
-package server.model.messagemodel;
+package messagemodel;
+
+import java.io.Serializable;
 
 /**
  * This class represents order lines for an order which includes the item to order and the amount to order.
  *
  * @author Patrick Linang
- * @since October 10, 2020
+ * @since November 25, 2020
  */
-public class OrderLine {
+public class OrderLine implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     /**
      * The item to order.
      */

@@ -37,6 +37,8 @@ public class CustomerManagementGUI {
     private JTextField postalCodeField;
     private JTextField phoneNumField;
 
+    private JFrame frame;
+
     private static final String NEW_CUSTOMER_STRING = "<Add new customer>";
 
     private boolean newCustomerFlag;
@@ -45,16 +47,20 @@ public class CustomerManagementGUI {
         return NEW_CUSTOMER_STRING;
     }
 
-    public void setNewCustomerFlag(boolean status) {
-        newCustomerFlag = status;
-    }
-
     public CustomerManagementGUI() {
-        JFrame frame = new JFrame("CustomerManagementGUI");
+        frame = new JFrame("CustomerManagementGUI");
         frame.setContentPane(this.customerManagementPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public void close() {
+        frame.dispose();
+    }
+
+    public void setNewCustomerFlag(boolean status) {
+        newCustomerFlag = status;
     }
 
     public void addClearSearchListener(ActionListener listener) {
