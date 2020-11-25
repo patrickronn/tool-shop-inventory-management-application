@@ -1,5 +1,6 @@
 package server.controller.servercontroller;
 
+import server.controller.databasecontroller.DatabaseController;
 import server.controller.modelcontroller.Deserializer;
 import server.controller.modelcontroller.ModelController;
 import server.controller.modelcontroller.Serializer;
@@ -64,7 +65,8 @@ public class ServerController {
     }
 
     public void addClientToPool() {
-        ModelController modelController = new ModelController(this, new Serializer(), new Deserializer());
+        ModelController modelController = new ModelController(
+                this, new Serializer(), new Deserializer(), new DatabaseController());
         clientPool.execute(modelController);
     }
 
