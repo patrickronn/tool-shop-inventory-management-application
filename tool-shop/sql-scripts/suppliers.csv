@@ -1,0 +1,21 @@
+SupplierID;Name;Type;Address;Cname;Phone;ImportTax
+8001;Grommet Builders;International;788 30th St., SE, Calgary;Fred;555-9087;1.25
+8002;Pong Works;International;749 Dufferin Blvd., SE, Calgary;Bart;555-7274;1.25
+8003;Wiley Inc.;International;26 40th St., SE, Calgary;BillyBob;555-2374;1.52
+8004;Winork Manufacturing Inc.;International;156 51st Ave., SE, Calgary;Marty;555-6356;1.75
+8005;Grab Bag Inc.;International;138 42nd Ave., NE, Calgary;Monty;555-4543;1.75
+8006;Paddy's Manufacturing;International;311 McCall Way, NE, Calgary;Barney;555-5605;1.75
+8007;Smickles Industries;International;966 Smed Lane, SE, Calgary;Lisa;555-0731;1.85
+8008;Thangs Inc.;International;879 37th Ave., NE, Calgary;Thelma;555-7017;1.85
+8009;Flip Works Inc.;International;472 Ogden Dale Rd., SE, Calgary;Rory;555-8180;1.85
+8010;Irkle Industries;International;754 Sunridge Way, NE, Calgary;Irma;555-3851;1.85
+8011;Biff Builders;Local;690 19th St., NE, Calgary;Borjn;555-5587;null
+8012;Twinkles Inc.;Local;318 29th St.,NE, Calgary;Barkley;555-8099;null
+8013;Piddles Industries;Local;238 112th Ave., NE, Calgary;Parnell;555-9955;null
+8014;Tic Tac Manufacturing;Local;598 Palmer Rd., NE, Calgary;Teisha;555-7710;null
+8015;Knock Knock Inc.;Local;363 42nd Ave., NE, Calgary;Ned;555-6419;null
+8016;Corky Things Inc.;Local;35 McCall Way, NE, Calgary;Corrine;555-2731;null
+8017;E & O Industries;Local;883 44th St., SE, Calgary;Stan;555-6161;null
+8018;Fiddleys Makes Stuff Inc.;Local;350 27th St., NE, Calgary;Fredda;555-8573;null
+8019;Horks and Stuff Manufacturing;Local;997 42nd Ave., NE, Calgary;Harold;555-8120;null
+8020;Wings Works;Local;754 48th St., SE, Calgary;Wing;555-0809;null
