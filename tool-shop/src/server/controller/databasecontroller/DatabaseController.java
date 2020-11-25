@@ -5,6 +5,7 @@ import messagemodel.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 public class DatabaseController implements DBConstants {
     private CustomerDBController customerDBController;
@@ -24,16 +25,26 @@ public class DatabaseController implements DBConstants {
         throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
     }
 
-    public CustomerDBController getCustomerDBController() {
-        return customerDBController;
+    public int insertCustomer(Customer customer) {
+        int customerIdAssigned = customerDBController.insertCustomer(customer.getCustomerInfoMap());
+        return customerIdAssigned;
+    }
+
+    public boolean updateCustomer(Customer customer) {
+        return customerDBController.updateCustomer(customer.getCustomerInfoMap());
+    }
+
+    public boolean deleteCustomer(Customer customer) {
+        Map<String, String> customerInfoMap = customer.getCustomerInfoMap();
+        return customerDBController.deleteCustomer(customerInfoMap);
     }
 
     private CustomerList convertCustomerListResultSet(ResultSet customerListResult) {
-        LinkedHashSet<Customer> customers = new LinkedHashSet<>();
-
         try {
+            LinkedHashSet<Customer> customers = new LinkedHashSet<>();
             while(customerListResult.next())
                 customers.add(convertCustomerResultSet(customerListResult));
+            customerListResult.close();
             return new CustomerList(customers);
         } catch (SQLException e) {
             System.err.println("System: error converting SQL query to CustomerList");
@@ -51,7 +62,6 @@ public class DatabaseController implements DBConstants {
             String postalCode = customerResult.getString("PostalCode");
             String phoneNum = customerResult.getString("PhoneNum");
             String type = customerResult.getString("Type");
-
             if (type.equals("R"))
                 return new ResidentialCustomer(id, firstName, lastName, address, postalCode, phoneNum);
             else if (type.equals("C"))

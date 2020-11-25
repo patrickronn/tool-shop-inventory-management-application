@@ -248,6 +248,8 @@ public class CustomerViewController {
                     customerManagementGUI.clearCustomerInfo();
                     customerManagementGUI.disableCustomerInfo();
                 }
+                else
+                    customerManagementGUI.displayMessage("Attempt to delete customer failed.");
             } catch(NumberFormatException err) {
                 customerManagementGUI.displayMessage("No customer selected.");
             }

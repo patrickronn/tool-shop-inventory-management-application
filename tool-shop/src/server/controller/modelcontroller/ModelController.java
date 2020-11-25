@@ -38,16 +38,21 @@ public class ModelController implements Runnable {
     }
 
     private void interpretMessage(Message message) {
-        switch (message.getObjectType().toLowerCase()) {
-            case ("customer"):
-                customerModelController.interpretCustomerMessage(message);
-                break;
-            case("customerlist"):
-                customerModelController.interpretCustomerListMessage(message);
-                break;
-            default:
-                System.out.println("Server: cannot interpret incoming message..");
-                serializer.sendServerResponse("failed");
+        try {
+            switch (message.getObjectType().toLowerCase()) {
+                case ("customer"):
+                    customerModelController.interpretCustomerMessage(message);
+                    break;
+                case ("customerlist"):
+                    customerModelController.interpretCustomerListMessage(message);
+                    break;
+                default:
+                    System.out.println("Server: cannot interpret incoming message..");
+                    serializer.sendServerResponse("failed");
+            }
+        }catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            serializer.sendServerResponse("failed");
         }
     }
 

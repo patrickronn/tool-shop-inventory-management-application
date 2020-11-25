@@ -1,11 +1,9 @@
 package server.controller.modelcontroller;
 
 import messagemodel.*;
-import server.controller.databasecontroller.CustomerDBController;
 import server.controller.databasecontroller.DatabaseController;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 
 public class CustomerModelController {
     private Serializer serializer;
@@ -38,54 +36,53 @@ public class CustomerModelController {
         }
     }
 
-    private void updateCustomerInfo(Customer customer) {
-        // Query DB
-        System.out.println("Updating Customer info:");
-        serializer.sendServerResponse("success");
-    }
-
     private void insertCustomer(Customer customer) {
         // Query DB
-        System.out.println("Inserting a new customer:");
-        customer.setId(100);
-        serializer.sendServerResponse("success");
-        serializer.sendMessage(new Message("insert", "customer", customer));
+        int customerIdAssigned = databaseController.insertCustomer(customer);
+        // Return updated Customer (with ID) if successful
+        if (customerIdAssigned != -1) {
+            customer.setId(customerIdAssigned);
+            serializer.sendServerResponse("success");
+            serializer.sendMessage(new Message("insert", "customer", customer));
+        }
+        else {serializer.sendServerResponse("failed");}
+    }
+
+    private void updateCustomerInfo(Customer customer) {
+        // Query DB
+        boolean updateSuceeded = databaseController.updateCustomer(customer);
+        // Send status
+        if (updateSuceeded) {serializer.sendServerResponse("success");}
+        else {serializer.sendServerResponse("failed");}
     }
 
     private void deleteCustomer(Customer customer) {
         // Query DB
-        System.out.println("Deleting a new customer:");
-        serializer.sendServerResponse("success");
+        boolean deleteSucceeded = databaseController.deleteCustomer(customer);
+        // Send status
+        if (deleteSucceeded) {serializer.sendServerResponse("success");}
+        else {serializer.sendServerResponse("failed");}
     }
 
     public void interpretCustomerListMessage(Message message) {
         switch (message.getAction()) {
             case "search":
-                sendCustomerList((HashMap<String, String>) message.getObject());
+                queryCustomerList((HashMap<String, String>) message.getObject());
                 break;
             default:
                 serializer.sendServerResponse("failed");
         }
     }
 
-    private void sendCustomerList(HashMap<String, String> searchParamMap) {
+    private void queryCustomerList(HashMap<String, String> searchParamMap) {
+        // Query database
         String searchParamType = searchParamMap.get("paramType");
         String searchParamValue = searchParamMap.get("paramValue");
-        // Query DB using search parameters
-        System.out.println("Querying Customer List using: " + searchParamType + ", " + searchParamValue);
-
-//        // For testing
-//        LinkedHashSet<Customer> customers = new LinkedHashSet<>();
-//        for (int i = 1; i < 20; i++) {
-//            customers.add(new ResidentialCustomer(i, "First"+i, "Last"+i,
-//                    "Address"+i, "PostalCode"+i, "PhoneNum"+i));
-//        }
-//        CustomerList customerList = new CustomerList(customers);
-
         CustomerList customerList = databaseController.getCustomerList(searchParamType, searchParamValue);
-
-
-        serializer.sendServerResponse("success");
-        serializer.sendMessage(new Message("update", "customerlist", customerList));
+        // Send to client
+        if (customerList != null) {
+            serializer.sendServerResponse("success");
+            serializer.sendMessage(new Message("update", "customerlist", customerList));
+        } else serializer.sendServerResponse("failed");
     }
 }

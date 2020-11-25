@@ -97,7 +97,7 @@ public class ModelController {
             customerList.deleteCustomer(customerInfoMap);
             return true;
         }
-        else return false;
+        else {return false;}
     }
 
     private Customer createCustomer(Map<String, String> customerInfoMap) {
