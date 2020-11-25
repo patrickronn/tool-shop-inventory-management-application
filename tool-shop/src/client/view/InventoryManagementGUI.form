@@ -82,11 +82,7 @@
                   <component id="1b64" class="javax.swing.JList" binding="inventoryResultsList">
                     <constraints/>
                     <properties>
-                      <model>
-                        <item value="Tool 1"/>
-                        <item value="Tool 2"/>
-                        <item value="Tool 3"/>
-                      </model>
+                      <model/>
                       <selectionMode value="0"/>
                     </properties>
                   </component>

@@ -1,6 +1,7 @@
 package client.view;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionListener;
 
 public class InventoryManagementGUI {
@@ -41,6 +42,10 @@ public class InventoryManagementGUI {
         searchByIDButton.addActionListener(listener);
     }
 
+    public void addInventoryResultsListener(ListSelectionListener listener) {
+        ListSelectionModel listSelectionModel = inventoryResultsList.getSelectionModel();
+        listSelectionModel.addListSelectionListener(listener);
+    }
     public void addDecreaseQuantityListener(ActionListener listener) {
         decreaseQuantityButton.addActionListener(listener);
     }
@@ -57,12 +62,24 @@ public class InventoryManagementGUI {
         ((DefaultListModel)inventoryResultsList.getModel()).addElement(searchResult);
     }
 
+    public String getSearchResultSelected() {
+        return String.valueOf(inventoryResultsList.getSelectedValue());
+    }
+
+    public String getQuantityValue() {
+        return quantityTextField.getText();
+    }
+
     public void setQuantityValue(String quantityString) {
         quantityTextField.setText(quantityString);
     }
 
     public void displayMessage(String message) {
         JOptionPane.showMessageDialog(inventoryManagementPanel, message);
+    }
+
+    public String promptForInput(String prompt) {
+        return JOptionPane.showInputDialog(prompt);
     }
 
     public static void main(String[] args) {

@@ -3,6 +3,7 @@ package messagemodel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * This class represents the inventory of a shop and tracks all items currently for sale.
@@ -85,6 +86,28 @@ public class Inventory implements Serializable {
                 return item;
         }
         return null;
+    }
+
+    public int getItemQuantity(int id) {
+        Item item = searchItem(id);
+        if (item != null)
+            return item.getQuantity();
+        else
+            return -1;
+    }
+
+    public boolean decreaseItemQuantity(int itemId, int quantityToRemove) {
+        try {
+            Item item = searchItem(itemId);
+            if (item != null) {
+                manageItem(item, quantityToRemove);
+                return true;
+            }
+            else
+                return false;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /**

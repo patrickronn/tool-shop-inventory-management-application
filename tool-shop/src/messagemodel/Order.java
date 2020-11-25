@@ -175,7 +175,7 @@ public class Order implements Serializable {
     @Override
     public String toString() {
         if (orderLines.isEmpty())
-            return "No items were ordered today.\n";
+            return "No items ordered.\n";
 
         // Pad id with zeros if required (e.g. id = 11 becomes idString = "00011")
         String idStr = String.format("%05d", id);

@@ -4,15 +4,20 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class OrderForm extends JDialog {
-    private JPanel contentPane;
+    private JPanel orderPane;
     private JButton buttonOK;
-    private JTextArea textArea1;
-    private JButton buttonCancel;
+    private JTextArea orderTextArea;
+    private JPanel navigationPanel;
+    private JPanel orderBodyPanel;
+    private JScrollPane orderScrollPane;
 
-    public OrderForm() {
-        setContentPane(contentPane);
+    public OrderForm(String orderString) {
+        setContentPane(orderPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+
+        // Displays order
+        setOrderText(orderString);
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -20,40 +25,32 @@ public class OrderForm extends JDialog {
             }
         });
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
-
-        // call onCancel() when cross is clicked
+        // call onOK() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                onCancel();
+                onOK();
             }
         });
 
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
+        // call onOK() on ESCAPE
+        orderPane.registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                onCancel();
+                onOK();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     private void onOK() {
-        // add your code here
         dispose();
     }
 
-    private void onCancel() {
-        // add your code here if necessary
-        dispose();
+    public void setOrderText(String orderString) {
+        orderTextArea.setText(orderString);
     }
 
     public static void main(String[] args) {
-        OrderForm dialog = new OrderForm();
+        OrderForm dialog = new OrderForm("Test Order Here");
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);

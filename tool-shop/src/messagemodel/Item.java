@@ -96,11 +96,8 @@ public abstract class Item implements Serializable {
      */
     @Override
     public String toString() {
-        return "ID: " + id +
-                ", Name: " + name +
-                ", Quantity: " + quantity +
-                ", Price: " + price +
-                ", Type: " + type;
+        String priceFormatted = String.format("%.2f", price);
+        return id + ", " + name + ", " + type + ", $" + priceFormatted;
     }
 
     /**
