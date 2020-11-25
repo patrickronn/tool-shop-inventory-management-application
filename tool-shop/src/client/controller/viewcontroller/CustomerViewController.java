@@ -1,5 +1,6 @@
 package client.controller.viewcontroller;
 
+import client.controller.modelcontroller.CustomerModelController;
 import client.controller.modelcontroller.ModelController;
 import client.view.CustomerManagementGUI;
 
@@ -14,11 +15,11 @@ import java.util.Map;
 public class CustomerViewController {
 
     private CustomerManagementGUI customerManagementGUI;
-    private ModelController modelController;
+    private CustomerModelController customerModelController;
 
-    public CustomerViewController(CustomerManagementGUI gui, ModelController modelController) {
+    public CustomerViewController(CustomerManagementGUI gui, CustomerModelController customerModelController) {
         this.customerManagementGUI = gui;
-        this.modelController = modelController;
+        this.customerModelController = customerModelController;
 
         addActionListeners();
     }
@@ -87,8 +88,8 @@ public class CustomerViewController {
             Map<String, String> customerSearchParamMap = readSearchParamInfo();
 
             if (isParamValid(customerSearchParamMap.get("paramType"), customerSearchParamMap.get("paramValue"))) {
-                modelController.requestCustomerList(customerSearchParamMap);
-                loadSearchResults(modelController.getAllCustomerStrings());
+                customerModelController.requestCustomerList(customerSearchParamMap);
+                loadSearchResults(customerModelController.getAllCustomerStrings());
             }
             else
                 customerManagementGUI.displayMessage("Invalid search parameter value.");
@@ -136,7 +137,7 @@ public class CustomerViewController {
                     customerManagementGUI.setNewCustomerFlag(false);
                     int customerId = extractCustomerId(searchResultSelected);
                     if (customerId > 0)
-                        loadCustomerInfoForm(modelController.getCustomerInfo(customerId));
+                        loadCustomerInfoForm(customerModelController.getCustomerInfo(customerId));
                 }
             }
         }
@@ -173,10 +174,10 @@ public class CustomerViewController {
                 assertNoEmptyInfo(customerInfoMap);
                 assertValidCharLengths(customerInfoMap);
 
-                boolean updateSucceeded = modelController.updateCustomer(customerInfoMap);
+                boolean updateSucceeded = customerModelController.updateCustomer(customerInfoMap);
                 if (updateSucceeded) {
                     customerManagementGUI.displayMessage("Customer info was successfully saved.");
-                    loadSearchResults(modelController.getAllCustomerStrings());
+                    loadSearchResults(customerModelController.getAllCustomerStrings());
                     customerManagementGUI.clearCustomerId();
                     customerManagementGUI.clearCustomerInfo();
                     customerManagementGUI.disableCustomerInfo();
@@ -198,12 +199,12 @@ public class CustomerViewController {
                 assertValidCharLengths(customerInfoMap);
 
                 // Add new customer and update the GUI if successful
-                int newCustomerId = modelController.addNewCustomer(customerInfoMap);
+                int newCustomerId = customerModelController.addNewCustomer(customerInfoMap);
 
                 if (newCustomerId != -1) {
                     customerManagementGUI.displayMessage("New customer was successfully created.");
-                    loadCustomerInfoForm(modelController.getCustomerInfo(newCustomerId));
-                    loadSearchResults(modelController.getAllCustomerStrings());
+                    loadCustomerInfoForm(customerModelController.getCustomerInfo(newCustomerId));
+                    loadSearchResults(customerModelController.getAllCustomerStrings());
                     customerManagementGUI.selectLastSearchResult();
                 }
                 else
@@ -240,10 +241,10 @@ public class CustomerViewController {
             try {
                 Integer.parseInt(customerManagementGUI.getCustomerIdStringValue());
                 Map<String, String> customerInfoMap = readCustomerInfo();
-                boolean deleteSucceeded = modelController.deleteCustomer(customerInfoMap);
+                boolean deleteSucceeded = customerModelController.deleteCustomer(customerInfoMap);
                 if (deleteSucceeded) {
                     customerManagementGUI.displayMessage("Customer was successfully deleted.");
-                    loadSearchResults(modelController.getAllCustomerStrings());
+                    loadSearchResults(customerModelController.getAllCustomerStrings());
                     customerManagementGUI.clearCustomerId();
                     customerManagementGUI.clearCustomerInfo();
                     customerManagementGUI.disableCustomerInfo();

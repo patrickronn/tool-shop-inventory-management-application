@@ -242,7 +242,8 @@
                           </grid>
                         </constraints>
                         <properties>
-                          <editable value="true"/>
+                          <editable value="false"/>
+                          <enabled value="false"/>
                           <text value="-"/>
                         </properties>
                       </component>

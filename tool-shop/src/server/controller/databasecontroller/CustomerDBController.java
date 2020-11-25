@@ -53,14 +53,18 @@ public class CustomerDBController implements DBConstants {
 
             // Return the auto-assigned Id
             ResultSet generatedKeys = statement.getGeneratedKeys();
-            statement.close();
-
             if (generatedKeys.next()) {return generatedKeys.getInt(1);}
             else {return -1;}
         } catch (SQLException e) {
             System.err.println("System: error when inserting new customer.");
             e.printStackTrace();
             return -1;
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                System.err.println("System: error closing PreparedStatement object.");
+            }
         }
     }
 
@@ -74,12 +78,17 @@ public class CustomerDBController implements DBConstants {
             setStatementValuesFromMap(statement, customerInfoMap);
             statement.setString(7, customerInfoMap.get("customerId"));
             statement.executeUpdate();
-            statement.close();
             return true;
         } catch (SQLException e) {
             System.err.println("System: error when deleting customer.");
             e.printStackTrace();
             return false;
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                System.err.println("System: error closing PreparedStatement object.");
+            }
         }
     }
 
@@ -90,12 +99,17 @@ public class CustomerDBController implements DBConstants {
             statement = jdbc_connection.prepareStatement(deleteString);
             setStatementValue(statement, 1, "CustomerId", customerInfoMap.get("customerId"));
             statement.executeUpdate();
-            statement.close();
             return true;
         } catch (SQLException e) {
             System.err.println("System: error when deleting customer.");
             e.printStackTrace();
             return false;
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                System.err.println("System: error closing PreparedStatement object.");
+            }
         }
     }
 
