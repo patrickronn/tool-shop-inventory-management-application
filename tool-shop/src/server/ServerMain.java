@@ -1,3 +1,5 @@
+package server;
+
 import server.controller.servercontroller.ServerController;
 
 public class ServerMain {

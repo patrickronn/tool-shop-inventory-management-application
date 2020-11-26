@@ -1,3 +1,5 @@
+package client;
+
 import client.controller.clientcontroller.ClientInitializer;
 
 public class ClientMain {

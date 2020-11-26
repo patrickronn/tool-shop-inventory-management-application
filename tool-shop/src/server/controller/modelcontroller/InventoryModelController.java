@@ -78,7 +78,7 @@ public class InventoryModelController {
     private void insertOrder(Order order) {
         // Check order validity
         if (!checkOrderIsValid(order)) {
-            System.err.println("System: received an order with invalid order details");
+            System.err.println("Server: received an order with invalid order details");
             serializer.sendServerResponse("failed");
             return;
         }
