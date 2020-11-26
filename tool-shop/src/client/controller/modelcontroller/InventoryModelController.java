@@ -62,6 +62,29 @@ public class InventoryModelController {
         return false;
     }
 
+    public boolean orderIsEmpty() {
+        return inventory.getOrder().orderIsEmpty();
+    }
+
+    public boolean saveOrder() {
+        Order order = inventory.getOrder();
+        if (order != null && !order.orderIsEmpty()) {
+            // Send order to server
+            Message message = new Message("insert", "order", order);
+            serializer.sendMessage(message);
+
+            // Await response and update order (in case order ID was modified by server)
+            String response = deserializer.awaitResponseMessage();
+            if (response.equals("success")) {
+                Message responseMessage = deserializer.readMessage();
+                this.inventory.setOrder((Order) responseMessage.getObject());
+                return true;
+            }
+        }
+        // If order failed to save, send false
+        return false;
+    }
+
     public int getItemQuantity(int itemId) {
         return inventory.getItemQuantity(itemId);
     }

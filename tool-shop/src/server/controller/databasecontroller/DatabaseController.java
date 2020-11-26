@@ -1,10 +1,7 @@
 package server.controller.databasecontroller;
 
 import messagemodel.*;
-import server.model.IntlSupplier;
-import server.model.LocalSupplier;
-import server.model.Supplier;
-import server.model.SupplierList;
+import server.model.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -59,7 +56,8 @@ public class DatabaseController implements DBConstants {
     }
 
     public boolean decreaseItemQuantity(String searchParam, String searchValue, String quantityToRemove) {
-        return false;
+        boolean decreaseSucceeded = inventoryDBController.decreaseItemQuantity(searchParam, searchValue, quantityToRemove);
+        return decreaseSucceeded;
     }
 
     public CustomerList getCustomerList(String searchParam, String searchValue) {
@@ -83,6 +81,44 @@ public class DatabaseController implements DBConstants {
         Map<String, String> customerInfoMap = customer.getCustomerInfoMap();
         return customerDBController.deleteCustomer(customerInfoMap);
     }
+
+    public boolean insertOrder(Order order) {
+        // Ensure order ID doesn't exist
+        while(!orderDBController.isOrderIdUnique(order.getId())) {
+            order.setRandomizedId();
+        }
+
+        // Insert order
+        int orderId = order.getId();
+        String orderDate = order.getDate();
+        boolean orderInserted = orderDBController.insertOrder(orderId, orderDate);
+
+        // Insert order lines
+        boolean allOrderLinesInserted = true;
+        if (orderInserted) {
+            for (OrderLine orderLine: order.getOrderLines()) {
+                if (!insertOrderLine(orderLine)) allOrderLinesInserted = false;
+            }
+            return allOrderLinesInserted;
+        }
+        else return false;
+    }
+
+    private boolean insertOrderLine(OrderLine orderLine) {
+        int orderId = orderLine.getOrder().getId();
+        int toolId = orderLine.getItemToOrder().getId();
+        int supplierId = orderLine.getSupplier().getId();
+        int quantity = orderLine.getQuantityToOrder();
+        if (orderDBController.insertOrderLine(orderId, toolId, supplierId, quantity)) {
+            return true;
+        }
+        else {
+            System.err.println("System: error inserting an order line: orderId=" +
+                    orderId + ", toolId=" + toolId + ", supplierId=" + supplierId + ", quantity=" + quantity);
+            return false;
+        }
+    }
+
 
     private LinkedHashSet<Item> convertItemListResultSet(ResultSet inventoryToolsResult) {
         try {

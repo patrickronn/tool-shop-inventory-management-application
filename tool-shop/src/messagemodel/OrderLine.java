@@ -1,5 +1,7 @@
 package messagemodel;
 
+import server.model.Supplier;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +18,11 @@ public class OrderLine implements Serializable {
      * The item to order.
      */
     private Item itemToOrder;
+
+    /**
+     * The supplier to order from
+     */
+    transient private Supplier supplier;
 
     /**
      * The amount of an item to order.
@@ -36,6 +43,7 @@ public class OrderLine implements Serializable {
      */
     public OrderLine(Item itemToOrder, int quantityToOrder) {
         setItemToOrder(itemToOrder);
+        setSupplier(null);
         setQuantityToOrder(quantityToOrder);
         setOrder(null);
     }
@@ -86,5 +94,20 @@ public class OrderLine implements Serializable {
      */
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    /**
+     * Getter method.
+     * @return reference to the Supplier object
+     */
+    public Supplier getSupplier() {
+        return supplier;
+    }
+    /**
+     * Setter method.
+     * @param supplier assigns the Supplier object
+     */
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 }

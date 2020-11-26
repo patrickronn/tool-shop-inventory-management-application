@@ -44,7 +44,7 @@ public class Deserializer {
         }
         catch (ClassNotFoundException e) {
             System.err.println("Class of a serialized object cannot be found");
-            System.exit(1);
+            e.printStackTrace();
         }
         return null;
     }

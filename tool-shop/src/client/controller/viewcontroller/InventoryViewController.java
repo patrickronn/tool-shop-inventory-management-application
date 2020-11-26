@@ -12,8 +12,7 @@ import messagemodel.Order;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -37,6 +36,30 @@ public class InventoryViewController {
         inventoryManagementGUI.addInventoryResultsListener(new SearchResultSelectionListener());
         inventoryManagementGUI.addViewOrderListener(new ViewOrderButtonListener());
         inventoryManagementGUI.addDecreaseQuantityListener(new DecreaseQuantityButtonListener());
+        saveOrderWhenClosing();
+    }
+
+    private void saveOrderWhenClosing() {
+        inventoryManagementGUI.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (inventoryModelController.orderIsEmpty()) {
+                    inventoryManagementGUI.displayMessage("No order was created today.");
+                    return;
+                }
+
+                // If order was created, save it to server
+                boolean saveSucceeded = inventoryModelController.saveOrder();
+                if (saveSucceeded) {
+                    inventoryManagementGUI.displayMessage("Order successfully saved on server");
+                    String orderString = inventoryModelController.getCurrentOrder();
+                    OrderDialog dialog = new OrderDialog(orderString);
+                    dialog.pack();
+                    dialog.setVisible(true);
+                }
+                else { inventoryManagementGUI.displayMessage("Order failed to save"); }
+            }
+        });
     }
 
     class SearchToolInfoListener implements ActionListener {
@@ -184,7 +207,7 @@ public class InventoryViewController {
             if (decreaseSucceeded) {
                 int itemId = Integer.parseInt(itemDecreaseParamMap.get("paramValue"));
                 int updatedQuantity = inventoryModelController.getItemQuantity(itemId);
-                inventoryManagementGUI.displayMessage("Quantity successfully decreased (Updated Quantity = " +
+                inventoryManagementGUI.displayMessage("Quantity successfully decreased\n(Updated Quantity = " +
                         updatedQuantity + ")");
                 inventoryManagementGUI.setQuantityValue(String.valueOf(updatedQuantity));
             } else {

@@ -72,7 +72,7 @@
         </constraints>
         <properties>
           <font size="14"/>
-          <text value="Current Order:"/>
+          <text value="Today's Order List:"/>
         </properties>
       </component>
     </children>

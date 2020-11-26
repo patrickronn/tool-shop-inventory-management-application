@@ -18,14 +18,39 @@ public class InventoryDBController implements DBConstants{
                     " LEFT JOIN " + ELECTRICAL_TOOL_TABLE_NAME + " ON " + TOOL_TABLE_NAME + ".ToolId = " + ELECTRICAL_TOOL_TABLE_NAME + ".ToolId";
             try {
                 // Prepare statement and return
+                if(statement != null) statement.close();
                 statement = jdbc_connection.prepareStatement(query);
                 return statement.executeQuery();
             }
             catch (SQLException e) {
-                System.err.println("System: error when retrieving customer list:\n" + e.getMessage());
+                System.err.println("System: error when retrieving item list:\n" + e.getMessage());
                 return null;
             }
         } else return null;
+    }
+
+    public boolean decreaseItemQuantity(String searchParam, String searchValue, String quantityToRemove) {
+        if (searchParam.equals("toolId")) {
+            String updateString = "UPDATE " + TOOL_TABLE_NAME +
+                    " SET Quantity = Quantity - ? WHERE ToolId = ? AND Quantity > 0";
+            try {
+                // Attempt to decrease and return
+                statement = jdbc_connection.prepareStatement(updateString);
+                statement.setInt(1, Integer.parseInt(quantityToRemove));
+                statement.setInt(2, Integer.parseInt(searchValue));
+                statement.executeUpdate();
+                return true;
+            } catch (SQLException e) {
+                System.err.println("System: error when updating tool quantity:\n" + e.getMessage());
+                return false;
+            } finally {
+                try {
+                    if (statement != null) statement.close();
+                } catch (SQLException e) {
+                    System.err.println("System: error closing PreparedStatement object.");
+                }
+            }
+        } else return false;
     }
 
     public ResultSet getSupplierListResultSet(String searchParam, String searchValue) {
@@ -39,7 +64,7 @@ public class InventoryDBController implements DBConstants{
                 return statement.executeQuery();
             }
             catch (SQLException e) {
-                System.err.println("System: error when retrieving customer list:\n" + e.getMessage());
+                System.err.println("System: error when retrieving supplier list:\n" + e.getMessage());
                 return null;
             }
         } else return null;

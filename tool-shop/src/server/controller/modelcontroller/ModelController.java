@@ -51,6 +51,8 @@ public class ModelController implements Runnable {
                 case "itemparameters":
                     inventoryModelController.interpretInventoryMessage(message);
                     break;
+                case "order":
+                    inventoryModelController.interpretOrderMessage(message);
                 default:
                     System.out.println("Server: cannot interpret incoming message..");
                     serializer.sendServerResponse("failed");

@@ -32,6 +32,20 @@ public class SupplierList {
     }
 
     /**
+     * Search for a supplier based on supplier ID and retrieve its reference.
+     *
+     * @param id the supplier id to search for
+     * @return reference to the Supplier object with matching id; else, null.
+     */
+    public Supplier searchSupplier(int id) {
+        for (Supplier supplier: suppliers) {
+            if (supplier.getId() == id)
+                return supplier;
+        }
+        return null;
+    }
+
+    /**
      * Provides a description for all suppliers listed.
      * @return a String representation of all suppliers currently referenced by the list.
      */

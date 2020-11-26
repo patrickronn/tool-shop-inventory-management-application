@@ -36,7 +36,7 @@ public class Serializer {
             objectOut.writeObject(object);
         } catch (IOException e) {
             System.err.println("Error sending object to output stream of server.");
-            System.exit(1);
+            e.printStackTrace();
         }
     }
 

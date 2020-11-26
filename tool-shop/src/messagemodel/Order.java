@@ -1,5 +1,8 @@
 package messagemodel;
 
+import server.model.Supplier;
+import server.model.SupplierList;
+
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 
@@ -51,12 +54,31 @@ public class Order implements Serializable {
         setDate(generateDate());
     }
 
+    public boolean orderIsEmpty() {
+        if (orderLines.size() == 0) { return true; }
+        else { return false; }
+    }
+
     /**
      * Adds a new order line to the order.
      * @param orderLine a new OrderLine object to add
      */
     public void addOrderLine(OrderLine orderLine) {
         orderLines.add(orderLine);
+    }
+
+    /**
+     * Assigns supplier object references to order lines based on a list of suppliers
+     *
+     * @param supplierList a list of Suppliers to search from
+     */
+    public void addSuppliersToOrderLines(SupplierList supplierList) {
+        for (OrderLine orderLine: orderLines) {
+            int supplierId = orderLine.getItemToOrder().getSupplierId();
+            Supplier supplier = supplierList.searchSupplier(supplierId);
+            if (supplier != null)
+                orderLine.setSupplier(supplier);
+        }
     }
 
     /**
@@ -98,7 +120,6 @@ public class Order implements Serializable {
         // Null if no match found
         return null;
     }
-
 
     /**
      * Helper method to generate a randomized ID value between MAX_ID and MIN_ID (inclusive).
@@ -151,6 +172,13 @@ public class Order implements Serializable {
     }
 
     /**
+     * Setter method which generates a randomized ID.
+     */
+    public void setRandomizedId() {
+        setId(generateId());
+    }
+
+    /**
      * Getter method.
      * @return the date of the order
      */
@@ -181,14 +209,15 @@ public class Order implements Serializable {
         String idStr = String.format("%05d", id);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("ORDER ID:\t\t\t\t").append(idStr).append('\n');
-        sb.append("Date Ordered:\t\t\t").append(date).append('\n').append('\n');
+        sb.append("ORDER ID: ").append(idStr).append('\n');
+        sb.append("Date Ordered: ").append(date).append('\n').append('\n');
 
+        int i = 1;
         for (OrderLine orderLine : orderLines) {
             // Append each order line's information
-            sb.append("Item description:\t\t").append(orderLine.getItemToOrder().getName()).append('\n');
-            sb.append("Amount ordered:\t\t\t").append(orderLine.getQuantityToOrder()).append('\n');
-            sb.append('\n');
+            sb.append(i).append(". Name:").append(orderLine.getItemToOrder().getName()).append('\n');
+            sb.append("(Amount ordered: ").append(orderLine.getQuantityToOrder()).append(")\n");
+            i++;
         }
         // Remove the extra newline character
         sb.deleteCharAt(sb.length() - 1);

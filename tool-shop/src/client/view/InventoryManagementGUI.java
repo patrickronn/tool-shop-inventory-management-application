@@ -3,6 +3,7 @@ package client.view;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
 
 public class InventoryManagementGUI {
     private JPanel inventoryManagementPanel;
@@ -48,6 +49,10 @@ public class InventoryManagementGUI {
         searchByNameButton.setEnabled(condition);
         viewOrderButton.setEnabled(condition);
         decreaseQuantityButton.setEnabled(condition);
+    }
+
+    public void addWindowListener(WindowListener listener) {
+        frame.addWindowListener(listener);
     }
 
     public void addLoadAllToolsListener(ActionListener listener) {
