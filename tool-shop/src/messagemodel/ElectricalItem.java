@@ -49,6 +49,7 @@ public class ElectricalItem extends Item {
 
     @Override
     public String toString() {
-        return super.toString() + ", " + powerType;
+        String priceFormatted = String.format("%.2f", price);
+        return id + ", " + name + ", " + type + ", " + powerType + ", $" + priceFormatted;
     }
 }

@@ -7,21 +7,9 @@ public class CustomerDBController implements DBConstants {
     private Connection jdbc_connection;
     private PreparedStatement statement;
 
-    public CustomerDBController() {
-        try {
-            // If this throws an error, make sure you have added the mySQL connector JAR to the project
-            Class.forName("com.mysql.jdbc.Driver");
-
-            // If this fails make sure your connectionInfo and login/password are correct
-            jdbc_connection = DriverManager.getConnection(CONNECTION_INFO, USER, PASSWORD);
-            System.out.println("System: connected to " + CONNECTION_INFO);
-        } catch(SQLException e) {
-            System.err.println("System: error connecting to " + CONNECTION_INFO);
-            e.printStackTrace();
-        }
-		catch(Exception e) {
-            e.printStackTrace();
-        }
+    public CustomerDBController(Connection jdbc_connection) {
+        this.jdbc_connection = jdbc_connection;
+        this.statement = null;
     }
 
     public ResultSet getCustomerListResultSet(String searchParam, String searchValue) {
@@ -151,13 +139,5 @@ public class CustomerDBController implements DBConstants {
         setStatementValue(statement, 4, "PhoneNum", customerInfoMap.get("phoneNum"));
         setStatementValue(statement, 5, "Address", customerInfoMap.get("address"));
         setStatementValue(statement, 6, "PostalCode", customerInfoMap.get("postalCode"));
-    }
-
-    public void close() {
-        try {
-            jdbc_connection.close();
-        } catch (SQLException e) {
-            System.err.println("System: error when closing connection to " + CONNECTION_INFO);
-        }
     }
 }

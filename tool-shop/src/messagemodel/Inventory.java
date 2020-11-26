@@ -168,7 +168,8 @@ public class Inventory implements Serializable {
             sb.append(item).append('\n');
 
         // Remove the extra newline character '\n'
-        sb.deleteCharAt(sb.length()-1);
+        if (sb.length() > 0)
+            sb.deleteCharAt(sb.length()-1);
 
         return sb.toString();
     }

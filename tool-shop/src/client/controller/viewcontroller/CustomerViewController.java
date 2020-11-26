@@ -255,8 +255,4 @@ public class CustomerViewController {
             }
         }
     }
-
-    public static void main(String[] args) {
-//        CustomerViewController vc = new CustomerViewController(new CustomerManagementGUI(), new ModelController(null, null, null, null));
-    }
 }

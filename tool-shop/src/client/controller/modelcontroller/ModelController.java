@@ -19,7 +19,7 @@ public class ModelController {
         this.customerList = cl;
         this.inventory = inv;
 
-        this.customerModelController = new CustomerModelController(s, ds, customerList);
+        this.customerModelController = new CustomerModelController(s, ds, cl);
         this.inventoryModelController = new InventoryModelController(s, ds, inv);
         openStreams();
     }

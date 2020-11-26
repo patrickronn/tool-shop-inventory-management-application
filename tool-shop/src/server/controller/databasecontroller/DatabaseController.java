@@ -2,6 +2,8 @@ package server.controller.databasecontroller;
 
 import messagemodel.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
@@ -11,11 +13,29 @@ public class DatabaseController implements DBConstants {
     private CustomerDBController customerDBController;
     private InventoryDBController inventoryDBController;
     private OrderDBController orderDBController;
+    private Connection jdbc_connection;
 
     public DatabaseController() {
-        customerDBController = new CustomerDBController();
-        inventoryDBController = new InventoryDBController();
-        orderDBController = new OrderDBController();
+        try {
+            // If this throws an error, make sure you have added the mySQL connector JAR to the project
+            Class.forName("com.mysql.jdbc.Driver");
+            // If this fails make sure your connectionInfo and login/password are correct
+            this.jdbc_connection = DriverManager.getConnection(CONNECTION_INFO, USER, PASSWORD);
+            System.out.println("System: connected to " + CONNECTION_INFO);
+
+            // Instantiate sub-controllers
+            this.customerDBController = new CustomerDBController(jdbc_connection);
+            this.inventoryDBController = new InventoryDBController(jdbc_connection);
+            this.orderDBController = new OrderDBController(jdbc_connection);
+
+        } catch(SQLException e) {
+            System.err.println("System: error connecting to " + CONNECTION_INFO);
+            e.printStackTrace();
+            System.exit(1);
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     public LinkedHashSet<Item> getItems(String searchParam, String searchValue) {
@@ -120,8 +140,11 @@ public class DatabaseController implements DBConstants {
     }
 
     public void close() {
-        customerDBController.close();
-        inventoryDBController.close();
+        try {
+            jdbc_connection.close();
+        } catch (SQLException e) {
+            System.err.println("System: error when closing connection to " + CONNECTION_INFO);
+        }
     }
 
     public static void main(String[] args) {
