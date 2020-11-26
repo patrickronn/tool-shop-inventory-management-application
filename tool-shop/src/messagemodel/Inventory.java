@@ -88,19 +88,19 @@ public class Inventory implements Serializable {
         return null;
     }
 
-    public Map<String, String> searchItemStringMap(Map<String, String> itemSearchParam) {
+    public Map<String, String> getItemStringMap(Map<String, String> itemSearchParam) {
         String paramType = itemSearchParam.get("paramType");
         String paramValue = itemSearchParam.get("paramValue");
 
         Item item = null;
-        if (paramType.equals("ToolId")) {
+        if (paramType.equals("toolId")) {
             item = searchItem(Integer.parseInt(paramValue));
         }
-        else if (paramType.equals("Name"))
+        else if (paramType.equals("name"))
             item = searchItem(paramValue);
 
-        if (item != null) {return item.toMap();}
-        else {return null;}
+        if (item != null) { return item.toMap(); }
+        else { return null; }
     }
 
     public int getItemQuantity(int id) {
@@ -111,18 +111,9 @@ public class Inventory implements Serializable {
             return -1;
     }
 
-    public boolean decreaseItemQuantity(int itemId, int quantityToRemove) {
-        try {
-            Item item = searchItem(itemId);
-            if (item != null) {
-                manageItem(item, quantityToRemove);
-                return true;
-            }
-            else
-                return false;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+    public boolean isQuantityToRemoveValid(int itemId, int quantityToRemove) {
+        Item item = searchItem(itemId);
+        return quantityToRemove <= item.getQuantity();
     }
 
     /**

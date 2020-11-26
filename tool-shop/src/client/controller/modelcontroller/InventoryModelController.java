@@ -20,55 +20,46 @@ public class InventoryModelController {
     }
 
     public Map<String, String> getItemInfo(Map<String, String> inventorySearchParamMap) {
-       return inventory.searchItemStringMap(inventorySearchParamMap);
+       return inventory.getItemStringMap(inventorySearchParamMap);
     }
 
     @SuppressWarnings("unchecked")
-    public boolean requestInventory(Map<String, String> inventorySearchParamMap) {
-        // Send inventory search parameters
-        Message message = new Message("search", "inventory", (HashMap<String, String>) inventorySearchParamMap);
+    public boolean requestItemList(Map<String, String> itemsSearchParamMap) {
+        // Send item list search parameters
+        Message message = new Message("search", "itemparameters", (HashMap<String, String>) itemsSearchParamMap);
         serializer.sendMessage(message);
 
-        // Await response and store results
+        // Await response and store inventory list on client side
         String response = deserializer.awaitResponseMessage();
         if (response.equals("success")) {
             Message responseMessage = deserializer.readMessage();
-            this.inventory = (Inventory) responseMessage.getObject();
+            this.inventory.setItems((LinkedHashSet<Item>) responseMessage.getObject());
             return true;
         }
         else return false;
-
-//        // For testing
-//        System.out.println("Request inventory from server.");
-//        ElectricalItem item1 = new ElectricalItem(1, "Phone Tool", 10, 43.95, "100 W");
-//        NonElectricalItem item2 = new NonElectricalItem(2, "Dowel", 200, 10.20);
-//        LinkedHashSet<Item> items = new LinkedHashSet<>();
-//        items.add(item1);
-//        items.add(item2);
-//        this.inventory = new Inventory(items, new Order());
-//        return true;
     }
 
-    @SuppressWarnings("unchecked")
     public boolean decreaseQuantity(Map<String, String> itemDecreaseParamMap) {
-//        // Send item decrease parameters
-//        Message message = new Message("decrease", "item", (HashMap<String, String>)itemDecreaseParamMap);
-//        serializer.sendMessage(message);
-//
-//        // Await response and apply quantity decrease on client side
-//        String response = deserializer.awaitResponseMessage();
-//        if (response.equals("success")) {
-//            int itemId = Integer.parseInt(itemDecreaseParamMap.get("paramValue"));
-//            int quantityToRemove = Integer.parseInt(itemDecreaseParamMap.get("paramQuantityToRemove"));
-//            inventory.decreaseItemQuantity(itemId, quantityToRemove);
-//            return true;
-//        }
-//        else return false;
 
-        // For testing
-        System.out.println("Request quantity to decrease from server");
-        System.out.println(itemDecreaseParamMap);
-        return true;
+        int itemId = Integer.parseInt(itemDecreaseParamMap.get("paramValue"));
+        int quantityToRemove = Integer.parseInt(itemDecreaseParamMap.get("paramQuantityToRemove"));
+
+        // Check if quantity to remove is valid
+        if (inventory.isQuantityToRemoveValid(itemId, quantityToRemove)) {
+            // Send item decrease parameters
+            Message message = new Message("decrease", "itemparameters", (HashMap<String, String>) itemDecreaseParamMap);
+            serializer.sendMessage(message);
+
+            // Await response and apply quantity decrease on client side
+            String response = deserializer.awaitResponseMessage();
+            if (response.equals("success")) {
+                Item item = inventory.searchItem(itemId);
+                inventory.manageItem(item, quantityToRemove);
+                return true;
+            }
+        }
+        // If decrease was unsuccessful, send false
+        return false;
     }
 
     public int getItemQuantity(int itemId) {

@@ -45,10 +45,10 @@ public class ModelController implements Runnable {
                 case "customer":
                     customerModelController.interpretCustomerMessage(message);
                     break;
-                case "customerlist":
+                case "customerparameters":
                     customerModelController.interpretCustomerListMessage(message);
                     break;
-                case "inventory":
+                case "itemparameters":
                     inventoryModelController.interpretInventoryMessage(message);
                     break;
                 default:

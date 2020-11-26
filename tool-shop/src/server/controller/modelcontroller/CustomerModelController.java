@@ -4,6 +4,7 @@ import messagemodel.*;
 import server.controller.databasecontroller.DatabaseController;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CustomerModelController {
     private Serializer serializer;
@@ -50,9 +51,9 @@ public class CustomerModelController {
 
     private void updateCustomerInfo(Customer customer) {
         // Query DB
-        boolean updateSuceeded = databaseController.updateCustomer(customer);
+        boolean updateSucceeded = databaseController.updateCustomer(customer);
         // Send status
-        if (updateSuceeded) {serializer.sendServerResponse("success");}
+        if (updateSucceeded) {serializer.sendServerResponse("success");}
         else {serializer.sendServerResponse("failed");}
     }
 
@@ -64,6 +65,7 @@ public class CustomerModelController {
         else {serializer.sendServerResponse("failed");}
     }
 
+    @SuppressWarnings("unchecked")
     public void interpretCustomerListMessage(Message message) {
         switch (message.getAction()) {
             case "search":
@@ -74,7 +76,7 @@ public class CustomerModelController {
         }
     }
 
-    private void queryCustomerList(HashMap<String, String> searchParamMap) {
+    private void queryCustomerList(Map<String, String> searchParamMap) {
         // Query database
         String searchParamType = searchParamMap.get("paramType");
         String searchParamValue = searchParamMap.get("paramValue");

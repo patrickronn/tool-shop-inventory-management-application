@@ -3,7 +3,7 @@ package server.model;
 public class IntlSupplier extends Supplier {
 
     /**
-     * The import tax charge required for international suppliers.
+     * The import tax rate required for international supplier.
      */
     private double importTax;
 
@@ -16,14 +16,16 @@ public class IntlSupplier extends Supplier {
      * @param companyName supplier's name as a String
      * @param address supplier's address as a String
      * @param salesContact name of person to contact at company as a String
+     * @param phoneNum supplier's phone number
+     * @param importTax the import tax rate for the supplier
      */
-    public IntlSupplier(int id, String companyName, String address, String salesContact) {
-        super(id, companyName, address, salesContact, "International");
+    public IntlSupplier(int id, String companyName, String address, String salesContact, String phoneNum, double importTax) {
+        super(id, companyName, address, salesContact, phoneNum, "International");
+        setImportTax(importTax);
     }
 
     public void calculateImportTax() {
-        // Arbitrarily set import tax to $100.00.
-        setImportTax(100.0);
+        System.out.println("This method calculates import tax using the rate: " + importTax);
     }
 
     public double getImportTax() {
@@ -32,5 +34,10 @@ public class IntlSupplier extends Supplier {
 
     public void setImportTax(double importTax) {
         this.importTax = importTax;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", Import Tax Rate: " + importTax;
     }
 }

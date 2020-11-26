@@ -32,8 +32,8 @@ public class InventoryViewController {
 
     public void addActionListeners() {
         inventoryManagementGUI.addLoadAllToolsListener(new LoadAllToolsListener());
-        inventoryManagementGUI.addSearchByIdListener(new SearchToolInfoListener("ToolId"));
-        inventoryManagementGUI.addSearchByNameListener(new SearchToolInfoListener("Name"));
+        inventoryManagementGUI.addSearchByIdListener(new SearchToolInfoListener("toolId"));
+        inventoryManagementGUI.addSearchByNameListener(new SearchToolInfoListener("name"));
         inventoryManagementGUI.addInventoryResultsListener(new SearchResultSelectionListener());
         inventoryManagementGUI.addViewOrderListener(new ViewOrderButtonListener());
         inventoryManagementGUI.addDecreaseQuantityListener(new DecreaseQuantityButtonListener());
@@ -105,11 +105,11 @@ public class InventoryViewController {
 
             // Send search parameters to inventory
             Map<String, String> inventorySearchParamMap = new HashMap<>();
-            inventorySearchParamMap.put("paramType", "inventory");
+            inventorySearchParamMap.put("paramType", "toolId");
             inventorySearchParamMap.put("paramValue", "all");
 
             // Update the GUI search results if successful
-            boolean requestSucceeded = inventoryModelController.requestInventory(inventorySearchParamMap);
+            boolean requestSucceeded = inventoryModelController.requestItemList(inventorySearchParamMap);
             if (requestSucceeded) {
                 ArrayList<String> inventoryStringList = inventoryModelController.getInventoryStringList();
                 inventoryManagementGUI.clearSearchResults();
@@ -184,7 +184,7 @@ public class InventoryViewController {
             if (decreaseSucceeded) {
                 int itemId = Integer.parseInt(itemDecreaseParamMap.get("paramValue"));
                 int updatedQuantity = inventoryModelController.getItemQuantity(itemId);
-                inventoryManagementGUI.displayMessage("Quantity successfully decreased. (Updated Quantity = " +
+                inventoryManagementGUI.displayMessage("Quantity successfully decreased (Updated Quantity = " +
                         updatedQuantity + ")");
                 inventoryManagementGUI.setQuantityValue(String.valueOf(updatedQuantity));
             } else {
@@ -197,7 +197,7 @@ public class InventoryViewController {
             String toolIdSelected = String.valueOf(extractToolId(searchResultSelected));
             String quantityToRemove = getQuantityToRemoveInput();
             Map<String, String> itemDecreaseParamMap = new HashMap<>();
-            itemDecreaseParamMap.put("paramType", "ToolId");
+            itemDecreaseParamMap.put("paramType", "toolId");
             itemDecreaseParamMap.put("paramValue", toolIdSelected);
             itemDecreaseParamMap.put("paramQuantityToRemove", quantityToRemove);
             return itemDecreaseParamMap;

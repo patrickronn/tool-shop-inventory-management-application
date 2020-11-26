@@ -6,46 +6,63 @@ import server.model.*;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 public class InventoryModelController {
     private Serializer serializer;
     private Deserializer deserializer;
     private DatabaseController databaseController;
-    private ShopManager shopManager;
+    private SupplierList supplierList;
 
     public InventoryModelController(Serializer s, Deserializer ds, DatabaseController dbc) {
         serializer = s;
         deserializer = ds;
         databaseController = dbc;
+        loadSupplierList();
+    }
+
+    private void loadSupplierList() {
+        this.supplierList = databaseController.getSupplierList("supplierId", "all");
     }
 
     @SuppressWarnings("unchecked")
     public void interpretInventoryMessage(Message message) {
         switch (message.getAction()) {
             case "search":
-                queryInventory((HashMap<String, String>) message.getObject());
+                queryItemList((HashMap<String, String>) message.getObject());
+                break;
+            case "decrease":
+                decreaseItemQuantity((HashMap<String, String>) message.getObject());
                 break;
             default:
                 serializer.sendServerResponse("failed");
         }
     }
 
-    private void queryInventory(HashMap<String, String> searchParamMap) {
+    private void queryItemList(Map<String, String> searchParamMap) {
         String searchParamType = searchParamMap.get("paramType");
         String searchParamValue = searchParamMap.get("paramValue");
 
         LinkedHashSet<Item> itemsList;
         if (searchParamValue.toLowerCase().equals("all")) {
-            itemsList = databaseController.getItems(searchParamType, searchParamValue);
-            Inventory inventory = new Inventory(itemsList, new Order());
+            itemsList = databaseController.getItemList(searchParamType, searchParamValue);
             // Send to client
             if (itemsList != null) {
                 serializer.sendServerResponse("success");
-                serializer.sendMessage(new Message("update", "inventory", inventory));
-            }
-        }
-        // Send failure if search param value cannot be understood or database wasn't queried
-        serializer.sendServerResponse("failed");
+                serializer.sendMessage(new Message("update", "itemlist", itemsList));
+            } else serializer.sendServerResponse("failed");
+        } else serializer.sendServerResponse("failed");
+    }
 
+    private void decreaseItemQuantity(Map<String, String> searchParamMap) {
+        String searchParamType = searchParamMap.get("paramType");
+        String searchParamValue = searchParamMap.get("paramValue");
+        String searchParamRemoveQuantity = searchParamMap.get("paramQuantityToRemove");
+        boolean decreaseSucceeded = databaseController.decreaseItemQuantity(
+                searchParamType,searchParamValue, searchParamRemoveQuantity);
+        if (decreaseSucceeded) {
+            serializer.sendServerResponse("success");
+        }
+        else { serializer.sendServerResponse("failed"); }
     }
 }

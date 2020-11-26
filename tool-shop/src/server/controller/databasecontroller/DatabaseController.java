@@ -1,6 +1,10 @@
 package server.controller.databasecontroller;
 
 import messagemodel.*;
+import server.model.IntlSupplier;
+import server.model.LocalSupplier;
+import server.model.Supplier;
+import server.model.SupplierList;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -38,12 +42,24 @@ public class DatabaseController implements DBConstants {
         }
     }
 
-    public LinkedHashSet<Item> getItems(String searchParam, String searchValue) {
-        ResultSet inventoryToolsResult = inventoryDBController.getInventoryToolResultSet(searchParam, searchValue);
+    public LinkedHashSet<Item> getItemList(String searchParam, String searchValue) {
+        ResultSet inventoryToolsResult = inventoryDBController.getItemListResultSet(searchParam, searchValue);
         if (inventoryToolsResult != null)
             return convertItemListResultSet(inventoryToolsResult);
         else
             throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
+    }
+
+    public SupplierList getSupplierList(String searchParam, String searchValue) {
+        ResultSet supplierListResult = inventoryDBController.getSupplierListResultSet(searchParam, searchValue);
+        if (supplierListResult != null)
+            return convertSupplierListResultSet(supplierListResult);
+        else
+            throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
+    }
+
+    public boolean decreaseItemQuantity(String searchParam, String searchValue, String quantityToRemove) {
+        return false;
     }
 
     public CustomerList getCustomerList(String searchParam, String searchValue) {
@@ -103,6 +119,43 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    private SupplierList convertSupplierListResultSet(ResultSet supplierListResult) {
+        try {
+            LinkedHashSet<Supplier> suppliers = new LinkedHashSet<>();
+            while (supplierListResult.next())
+                suppliers.add(convertSupplierResultSet(supplierListResult));
+            supplierListResult.close();
+            return new SupplierList(suppliers);
+        } catch (SQLException e) {
+            System.err.println("System: error converting ResultSet to CustomerList");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Supplier convertSupplierResultSet(ResultSet supplierResult) {
+        try {
+            int id = supplierResult.getInt("SupplierId");
+            String name = supplierResult.getString("Name");
+            String type = supplierResult.getString("Type");
+            String address = supplierResult.getString("Address");
+            String salesContact = supplierResult.getString("CName");
+            String phoneNum = supplierResult.getString("Phone");
+            if (type.equals("International")) {
+                double importTax = supplierResult.getDouble("ImportTax");
+                return new IntlSupplier(id, name, address, salesContact, phoneNum, importTax);
+            }
+            else if (type.equals("Local"))
+                return new LocalSupplier(id, name, address, salesContact, phoneNum);
+            else
+                return null;
+        } catch (SQLException e) {
+            System.err.println("System: error converting ResultSet to Customer object");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private CustomerList convertCustomerListResultSet(ResultSet customerListResult) {
         try {
             LinkedHashSet<Customer> customers = new LinkedHashSet<>();
@@ -148,15 +201,17 @@ public class DatabaseController implements DBConstants {
     }
 
     public static void main(String[] args) {
-        DatabaseController dbcontroller = new DatabaseController();
-        CustomerList customerList = dbcontroller.getCustomerList("lastName", "Smith");
+        DatabaseController dbController = new DatabaseController();
+        CustomerList customerList = dbController.getCustomerList("lastName", "Smith");
         System.out.println(customerList.getCustomerStringList());
 
-        dbcontroller = new DatabaseController();
-        LinkedHashSet<Item> items = dbcontroller.getItems("toolId", "all");
+        LinkedHashSet<Item> items = dbController.getItemList("toolId", "all");
         for (Item item: items) {
             System.out.println(item);
         }
-        dbcontroller.close();
+
+        SupplierList supplierList = dbController.getSupplierList("supplierId", "all");
+        System.out.println(supplierList);
+        dbController.close();
     }
 }

@@ -39,6 +39,11 @@ public abstract class Supplier {
     protected LinkedHashSet<Item> suppliedItems;
 
     /**
+     * Phone number of supplier.
+     */
+    protected String phoneNum;
+
+    /**
      * Description of the type of supplier (e.g. local supplier, international supplier)
      */
     protected String type;
@@ -52,13 +57,16 @@ public abstract class Supplier {
      * @param companyName supplier's name as a String
      * @param address supplier's address as a String
      * @param salesContact name of person to contact at company as a String
+     * @param phoneNum supplier's phone number
+     * @param type type of supplier (e.g. 'Local' or 'International')
      */
-    protected Supplier(int id, String companyName, String address, String salesContact, String type) {
+    protected Supplier(int id, String companyName, String address, String salesContact, String phoneNum, String type) {
         setId(id);
         setCompanyName(companyName);
         setAddress(address);
         setSalesContact(salesContact);
         setSuppliedItems(new LinkedHashSet<>());
+        setPhoneNum(phoneNum);
         setType(type);
     }
 
@@ -165,6 +173,22 @@ public abstract class Supplier {
 
     /**
      * Getter method.
+     * @return supplier phone number
+     */
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    /**
+     * Setter method
+     * @param phoneNum phone number of the suppleir
+     */
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
+    }
+
+    /**
+     * Getter method.
      * @return type of supplier.
      */
     public String getType() {
@@ -178,4 +202,6 @@ public abstract class Supplier {
     public void setType(String type) {
         this.type = type;
     }
+
+
 }

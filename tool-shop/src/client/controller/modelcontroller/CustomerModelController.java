@@ -19,7 +19,7 @@ public class CustomerModelController {
 
     public void requestCustomerList(Map<String, String> customerSearchParamMap) {
         // Send customer search parameters
-        Message message = new Message("search", "customerlist", (HashMap<String, String>) customerSearchParamMap);
+        Message message = new Message("search", "customerparameters", (HashMap<String, String>) customerSearchParamMap);
         serializer.sendMessage(message);
 
         // Await response and store results
