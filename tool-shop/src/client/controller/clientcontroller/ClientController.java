@@ -40,7 +40,6 @@ public class ClientController {
         return null;
     }
 
-
     private void closeSocket() {
         try {
             socketToServer.close();

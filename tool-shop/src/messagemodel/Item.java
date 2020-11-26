@@ -1,7 +1,5 @@
 package messagemodel;
 
-import server.model.Supplier;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +42,7 @@ public abstract class Item implements Serializable {
     protected String type;
 
     /**
-     * The supplier ID, which gets updated whenever a Supplier is assigned to the item.
+     * The supplier ID
      */
     protected int supplierId;
 
@@ -69,16 +67,24 @@ public abstract class Item implements Serializable {
         setType(type);
     }
 
+    /**
+     * Converts the item's attributes into a Hash Map.
+     * Each key is the attribute name and value is attribute value.
+     *
+     * This primary use of this method is to display item information on GUI string-based functionalities.
+     *
+     * @return a Map containing item attributes
+     */
     public Map<String, String> toMap() {
-        Map<String, String> customerInfoMap = new HashMap<>();
-        customerInfoMap.put("toolId", String.valueOf(id));
-        customerInfoMap.put("name", name);
-        customerInfoMap.put("quantity", String.valueOf(quantity));
-        customerInfoMap.put("price", String.format("%.2f", price));
-        customerInfoMap.put("toolType", type);
-        customerInfoMap.put("supplierId", String.valueOf(supplierId));
+        Map<String, String> itemInfoMap = new HashMap<>();
+        itemInfoMap.put("toolId", String.valueOf(id));
+        itemInfoMap.put("name", name);
+        itemInfoMap.put("quantity", String.valueOf(quantity));
+        itemInfoMap.put("price", String.format("%.2f", price));
+        itemInfoMap.put("toolType", type);
+        itemInfoMap.put("supplierId", String.valueOf(supplierId));
 
-        return customerInfoMap;
+        return itemInfoMap;
     }
 
     /**

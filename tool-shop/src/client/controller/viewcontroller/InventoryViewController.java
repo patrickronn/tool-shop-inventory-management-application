@@ -1,21 +1,15 @@
 package client.controller.viewcontroller;
 
-import client.controller.modelcontroller.Deserializer;
 import client.controller.modelcontroller.InventoryModelController;
-import client.controller.modelcontroller.Serializer;
 import client.view.InventoryManagementGUI;
 import client.view.ItemInfoDialog;
 import client.view.OrderDialog;
-import messagemodel.Inventory;
-import messagemodel.Item;
-import messagemodel.Order;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 
 public class InventoryViewController {
@@ -51,13 +45,13 @@ public class InventoryViewController {
                 // If order was created, save it to server
                 boolean saveSucceeded = inventoryModelController.saveOrder();
                 if (saveSucceeded) {
-                    inventoryManagementGUI.displayMessage("Order successfully saved on server");
+                    inventoryManagementGUI.displayMessage("Order successfully saved to server.");
                     String orderString = inventoryModelController.getCurrentOrder();
                     OrderDialog dialog = new OrderDialog(orderString);
                     dialog.pack();
                     dialog.setVisible(true);
                 }
-                else { inventoryManagementGUI.displayMessage("Order failed to save"); }
+                else { inventoryManagementGUI.displayMessage("Order failed to save."); }
             }
         });
     }
@@ -199,8 +193,13 @@ public class InventoryViewController {
                 return;
             }
 
-            // Create item decrease parameters and attempt to decrease
             Map<String, String> itemDecreaseParamMap = createParamMap();
+            if (itemDecreaseParamMap.get("paramQuantityToRemove").equals("0")) {
+                inventoryManagementGUI.displayMessage("'Decrease Quantity' request was cancelled.");
+                return;
+            }
+
+            // Create item decrease parameters and request to decrease
             boolean decreaseSucceeded = inventoryModelController.decreaseQuantity(itemDecreaseParamMap);
 
             // Update the GUI if decrease was successful
@@ -240,25 +239,25 @@ public class InventoryViewController {
             String inputString;
             do {
                 inputString = inventoryManagementGUI.promptForInput(
-                        "Please enter amount to remove (Current Quantity = " +
-                                inventoryManagementGUI.getQuantityValue() + "):");
-            } while (inputString == null || (isNotInteger(inputString)));
+                        "Please enter quantity to remove or '0' to cancel:\n(Current Quantity = " +
+                                inventoryManagementGUI.getQuantityValue() + ")");
+            } while (inputString == null || isNotPositiveInteger(inputString));
             return inputString;
         }
 
-        private boolean isNotInteger(String str) {
+        private boolean isNotPositiveInteger(String str) {
             try {
-                Integer.parseInt(str);
-                return false;
+                int num = Integer.parseInt(str);
+                return num < 0;
             } catch (NumberFormatException e) {
                 return true;
             }
         }
     }
 
-    public static void main(String[] args) {
-        Inventory inv = new Inventory(new LinkedHashSet<Item>(), new Order());
-        InventoryModelController imc = new InventoryModelController(new Serializer(), new Deserializer(), inv);
-        InventoryViewController ivc = new InventoryViewController(new InventoryManagementGUI(),imc);
-    }
+//    public static void main(String[] args) {
+//        Inventory inv = new Inventory(new LinkedHashSet<Item>(), new Order());
+//        InventoryModelController imc = new InventoryModelController(new Serializer(), new Deserializer(), inv);
+//        InventoryViewController ivc = new InventoryViewController(new InventoryManagementGUI(),imc);
+//    }
 }

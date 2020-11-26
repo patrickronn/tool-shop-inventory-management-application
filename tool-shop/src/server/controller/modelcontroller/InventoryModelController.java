@@ -25,13 +25,6 @@ public class InventoryModelController {
         this.supplierList = databaseController.getSupplierList("supplierId", "all");
     }
 
-    public boolean checkSupplierIdExists(int supplierId) {
-        if (supplierList.searchSupplier(supplierId) != null)
-            return true;
-        else
-            return false;
-    }
-
     @SuppressWarnings("unchecked")
     public void interpretInventoryMessage(Message message) {
         switch (message.getAction()) {
@@ -83,10 +76,15 @@ public class InventoryModelController {
     }
 
     private void insertOrder(Order order) {
-        // Add supplier references to the order
-        order.addSuppliersToOrderLines(supplierList);
+        // Check order validity
+        if (!checkOrderIsValid(order)) {
+            System.err.println("System: received an order with invalid order details");
+            serializer.sendServerResponse("failed");
+            return;
+        }
+
         boolean orderInserted = databaseController.insertOrder(order);
-        // If successfully save, return the order object in case anything was updated by server
+        // If successfully save, return the confirmed order object in case anything was updated by server
         if (orderInserted) {
             serializer.sendServerResponse("success");
             Message message = new Message("update", "order", order);
@@ -94,5 +92,31 @@ public class InventoryModelController {
         }
         else
             serializer.sendServerResponse("failed");
+    }
+
+    /**
+     * Used to check that all order lines in the order are valid.
+     *
+     * For example, ensure that each order line's item has a proper supplier id before
+     * it can added to the database.
+     *
+     * @param order an Order to check validity
+     * @return true if all order lines are valid, else false if at least one order line is invalid
+     */
+    public boolean checkOrderIsValid(Order order) {
+        for (OrderLine orderLine: order.getOrderLines()) {
+            int supplierId = orderLine.getItemToOrder().getSupplierId();
+            if (!checkSupplierIdExists(supplierId)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean checkSupplierIdExists(int supplierId) {
+        if (supplierList.searchSupplier(supplierId) != null)
+            return true;
+        else
+            return false;
     }
 }

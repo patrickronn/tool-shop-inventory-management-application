@@ -35,7 +35,7 @@ public class CustomerModelController {
     }
 
     public Map<String, String> getCustomerInfo(int customerId) {
-        return this.customerList.getCustomerInfo(customerId);
+        return this.customerList.getCustomerInfoMap(customerId);
     }
 
     public boolean updateCustomer(Map<String, String> customerInfoMap) {

@@ -6,8 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
- * This class represents the inventory of a shop and tracks all items currently for sale.
- * Inventory also keeps an order for any items that need to be re-stocked.
+ * This class represents the inventory of items and manages an order.
  * Inventory will automatically generate new order lines whenever an item has "low quantity".
  *
  * Includes methods for searching items and decreasing quantity of a specific item.
@@ -16,7 +15,6 @@ import java.util.Map;
  * @since November 25, 2020
  */
 public class Inventory implements Serializable {
-
     static final long serialVersionUID = 1L;
 
     /**
@@ -43,7 +41,7 @@ public class Inventory implements Serializable {
     /**
      * Constructs an inventory based on a given collection of items and an order.
      *
-     * @param items a LinkedHashSet of Item objects that are tracked by the inventory
+     * @param items a LinkedHashSet of Item objects to be tracked by the inventory
      * @param order an Order object where any new order lines can be added to
      */
     public Inventory(LinkedHashSet<Item> items, Order order) {
@@ -88,6 +86,17 @@ public class Inventory implements Serializable {
         return null;
     }
 
+    /**
+     * Searches for an item based on a set of item parameters and then returns a Map representation of
+     * the object that was found.
+     *
+     * For example for key="toolId", value=1001 - this will search for item with toolId attribute equal to 1001.
+     *
+     * @param itemSearchParam a map containing key-value pairs for:
+     *                        "paramType" corresponding to item.type attribute
+     *                        "paramValue" corresponding to the value of the item.type attribute
+     * @return a Map containing the found Item's attributes as key-value pairs; otherwise null
+     */
     public Map<String, String> getItemStringMap(Map<String, String> itemSearchParam) {
         String paramType = itemSearchParam.get("paramType");
         String paramValue = itemSearchParam.get("paramValue");
@@ -103,6 +112,11 @@ public class Inventory implements Serializable {
         else { return null; }
     }
 
+    /**
+     * Searches for an item and returns its current quantity
+     * @param id Item id to search
+     * @return Item quantity if id was found; otherwise -1.
+     */
     public int getItemQuantity(int id) {
         Item item = searchItem(id);
         if (item != null)
@@ -111,6 +125,13 @@ public class Inventory implements Serializable {
             return -1;
     }
 
+    /**
+     * Checks whether a specified quantity to remove is valid (i.e. ensure that item quantity never becomes negative).
+     *
+     * @param itemId id to search
+     * @param quantityToRemove quantity to remove
+     * @return true if quantityToRemove <= item.quantity; otherwise, false.
+     */
     public boolean isQuantityToRemoveValid(int itemId, int quantityToRemove) {
         Item item = searchItem(itemId);
         return quantityToRemove <= item.getQuantity();
@@ -119,8 +140,11 @@ public class Inventory implements Serializable {
     /**
      * Decreases the quantity of an item in the inventory and can update the order if required.
      *
+     * This maintains the order such that if an item keeps getting reduced below 40, it will constantly
+     * update the order line to always restock to 50.
+     *
      * If the quantity of the item to decrease is less than MIN_QUANTITY, the Order object must be updated.
-     * By default, it will place an order to restock up to RESTOCK_QUANTITY (as per previous Lab 2 specification).
+     * By default, it will place an order to restock up to RESTOCK_QUANTITY (as per project reqs/specification).
      *
      * @param item the Item object to decrease
      * @param quantityToRemove the amount to decrease an item's quantity by (cannot be more than current quantity)
@@ -165,6 +189,11 @@ public class Inventory implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * Used to gather item information as a collection of strings. Primarily used for GUI functionality.
+     *
+     * @return returns an ArrayList of string representations of each Item in the list
+     */
     public ArrayList<String> getInventoryStringList() {
         ArrayList<String> inventoryStringList = new ArrayList<>();
         for (Item item: items)

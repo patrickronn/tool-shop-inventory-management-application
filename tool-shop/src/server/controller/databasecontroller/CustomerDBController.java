@@ -114,6 +114,15 @@ public class CustomerDBController implements DBConstants {
         }
     }
 
+    private void setStatementValuesFromMap(PreparedStatement statement, Map<String, String> customerInfoMap) throws SQLException {
+        setStatementValue(statement, 1, "LName", customerInfoMap.get("lastName"));
+        setStatementValue(statement, 2, "FName", customerInfoMap.get("firstName"));
+        setStatementValue(statement, 3, "Type", customerInfoMap.get("customerType"));
+        setStatementValue(statement, 4, "PhoneNum", customerInfoMap.get("phoneNum"));
+        setStatementValue(statement, 5, "Address", customerInfoMap.get("address"));
+        setStatementValue(statement, 6, "PostalCode", customerInfoMap.get("postalCode"));
+    }
+
     private void setStatementValue(PreparedStatement statement, int index, String columnName, String value) throws SQLException {
         switch (columnName) {
             case "CustomerId":
@@ -130,14 +139,5 @@ public class CustomerDBController implements DBConstants {
             default:
                 throw new IllegalArgumentException(columnName + "isn't a valid column name");
         }
-    }
-
-    private void setStatementValuesFromMap(PreparedStatement statement, Map<String, String> customerInfoMap) throws SQLException {
-        setStatementValue(statement, 1, "LName", customerInfoMap.get("lastName"));
-        setStatementValue(statement, 2, "FName", customerInfoMap.get("firstName"));
-        setStatementValue(statement, 3, "Type", customerInfoMap.get("customerType"));
-        setStatementValue(statement, 4, "PhoneNum", customerInfoMap.get("phoneNum"));
-        setStatementValue(statement, 5, "Address", customerInfoMap.get("address"));
-        setStatementValue(statement, 6, "PostalCode", customerInfoMap.get("postalCode"));
     }
 }

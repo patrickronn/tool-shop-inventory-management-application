@@ -34,6 +34,7 @@ public class Serializer {
     private void sendSerializableObject(Serializable object) {
         try {
             objectOut.writeObject(object);
+            objectOut.flush();
         } catch (IOException e) {
             System.err.println("Error sending object to output stream of server.");
             e.printStackTrace();

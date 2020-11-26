@@ -1,5 +1,11 @@
 package messagemodel;
 
+/**
+ * Represents a non-electrical item.
+ *
+ * @author Patrick Linang
+ * @since November 26, 2020
+ */
 public class NonElectricalItem extends Item {
 
     /**

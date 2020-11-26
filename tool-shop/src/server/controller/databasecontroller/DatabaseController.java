@@ -69,16 +69,16 @@ public class DatabaseController implements DBConstants {
     }
 
     public int insertCustomer(Customer customer) {
-        int customerIdAssigned = customerDBController.insertCustomer(customer.getCustomerInfoMap());
+        int customerIdAssigned = customerDBController.insertCustomer(customer.toMap());
         return customerIdAssigned;
     }
 
     public boolean updateCustomer(Customer customer) {
-        return customerDBController.updateCustomer(customer.getCustomerInfoMap());
+        return customerDBController.updateCustomer(customer.toMap());
     }
 
     public boolean deleteCustomer(Customer customer) {
-        Map<String, String> customerInfoMap = customer.getCustomerInfoMap();
+        Map<String, String> customerInfoMap = customer.toMap();
         return customerDBController.deleteCustomer(customerInfoMap);
     }
 
@@ -107,7 +107,7 @@ public class DatabaseController implements DBConstants {
     private boolean insertOrderLine(OrderLine orderLine) {
         int orderId = orderLine.getOrder().getId();
         int toolId = orderLine.getItemToOrder().getId();
-        int supplierId = orderLine.getSupplier().getId();
+        int supplierId = orderLine.getItemToOrder().getSupplierId();
         int quantity = orderLine.getQuantityToOrder();
         if (orderDBController.insertOrderLine(orderId, toolId, supplierId, quantity)) {
             return true;
@@ -236,18 +236,18 @@ public class DatabaseController implements DBConstants {
         }
     }
 
-    public static void main(String[] args) {
-        DatabaseController dbController = new DatabaseController();
-        CustomerList customerList = dbController.getCustomerList("lastName", "Smith");
-        System.out.println(customerList.getCustomerStringList());
-
-        LinkedHashSet<Item> items = dbController.getItemList("toolId", "all");
-        for (Item item: items) {
-            System.out.println(item);
-        }
-
-        SupplierList supplierList = dbController.getSupplierList("supplierId", "all");
-        System.out.println(supplierList);
-        dbController.close();
-    }
+//    public static void main(String[] args) {
+//        DatabaseController dbController = new DatabaseController();
+//        CustomerList customerList = dbController.getCustomerList("lastName", "Smith");
+//        System.out.println(customerList.getCustomerStringList());
+//
+//        LinkedHashSet<Item> items = dbController.getItemList("toolId", "all");
+//        for (Item item: items) {
+//            System.out.println(item);
+//        }
+//
+//        SupplierList supplierList = dbController.getSupplierList("supplierId", "all");
+//        System.out.println(supplierList);
+//        dbController.close();
+//    }
 }

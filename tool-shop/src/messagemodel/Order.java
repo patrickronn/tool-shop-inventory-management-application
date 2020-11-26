@@ -1,8 +1,5 @@
 package messagemodel;
 
-import server.model.Supplier;
-import server.model.SupplierList;
-
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 
@@ -16,7 +13,6 @@ import java.util.LinkedHashSet;
  * @since November 25, 2020
  */
 public class Order implements Serializable {
-
     static final long serialVersionUID = 1L;
 
     /**
@@ -55,8 +51,7 @@ public class Order implements Serializable {
     }
 
     public boolean orderIsEmpty() {
-        if (orderLines.size() == 0) { return true; }
-        else { return false; }
+        return orderLines.size() == 0;
     }
 
     /**
@@ -65,20 +60,6 @@ public class Order implements Serializable {
      */
     public void addOrderLine(OrderLine orderLine) {
         orderLines.add(orderLine);
-    }
-
-    /**
-     * Assigns supplier object references to order lines based on a list of suppliers
-     *
-     * @param supplierList a list of Suppliers to search from
-     */
-    public void addSuppliersToOrderLines(SupplierList supplierList) {
-        for (OrderLine orderLine: orderLines) {
-            int supplierId = orderLine.getItemToOrder().getSupplierId();
-            Supplier supplier = supplierList.searchSupplier(supplierId);
-            if (supplier != null)
-                orderLine.setSupplier(supplier);
-        }
     }
 
     /**
@@ -215,8 +196,8 @@ public class Order implements Serializable {
         int i = 1;
         for (OrderLine orderLine : orderLines) {
             // Append each order line's information
-            sb.append(i).append(". Name:").append(orderLine.getItemToOrder().getName()).append('\n');
-            sb.append("(Amount ordered: ").append(orderLine.getQuantityToOrder()).append(")\n");
+            sb.append(i).append(". Name:").append(orderLine.getItemToOrder().getName());
+            sb.append(" (Amount ordered: ").append(orderLine.getQuantityToOrder()).append(")\n");
             i++;
         }
         // Remove the extra newline character
