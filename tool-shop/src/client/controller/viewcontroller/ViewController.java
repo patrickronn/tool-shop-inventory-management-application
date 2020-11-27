@@ -13,4 +13,8 @@ public class ViewController {
         customerViewController = new CustomerViewController(new CustomerManagementGUI(), modelController.getCustomerModelController());
         inventoryViewController = new InventoryViewController(new InventoryManagementGUI(), modelController.getInventoryModelController());
     }
+
+    public void displayMainMenu() {
+
+    }
 }

@@ -47,6 +47,14 @@ public class DatabaseController implements DBConstants {
             throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
     }
 
+    public Item getItem(String searchParam, String searchValue) throws SQLException {
+        ResultSet itemResult = inventoryDBController.getItemResultSet(searchParam, searchValue);
+        if (itemResult != null && itemResult.next())
+            return convertItemResultSet(itemResult);
+        else
+            throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
+    }
+
     public SupplierList getSupplierList(String searchParam, String searchValue) {
         ResultSet supplierListResult = inventoryDBController.getSupplierListResultSet(searchParam, searchValue);
         if (supplierListResult != null)
@@ -113,11 +121,38 @@ public class DatabaseController implements DBConstants {
             return true;
         }
         else {
-            System.err.println("System: error inserting an order line: orderId=" +
+            System.err.println("Server: error inserting an order line: orderId=" +
                     orderId + ", toolId=" + toolId + ", supplierId=" + supplierId + ", quantity=" + quantity);
             return false;
         }
     }
+
+    public Order getOrder(String searchParam, String searchValue) {
+        ResultSet orderResult = orderDBController.getOrder(searchParam, searchValue);
+        Order order = convertOrderResult(orderResult);
+
+        if (order == null) {
+            System.err.println("Server: error retrieving order with: " + searchParam + "=" + searchValue);
+            return null;
+        }
+
+        try {
+            addOrderLines(order);
+            return order;
+        } catch (SQLException e) {
+            System.err.println("Server: error adding order lines to queried order\n" + e.getMessage());
+            return null;
+        }
+    }
+
+    private void addOrderLines(Order order) throws SQLException {
+        String orderId = String.valueOf(order.getId());
+        ResultSet orderLinesResult = orderDBController.getOrderLines("orderId", orderId);
+
+        while (orderLinesResult.next())
+            order.addOrderLine(convertOrderLineResult(orderLinesResult));
+    }
+
 
 
     private LinkedHashSet<Item> convertItemListResultSet(ResultSet inventoryToolsResult) {
@@ -128,7 +163,7 @@ public class DatabaseController implements DBConstants {
             inventoryToolsResult.close();
             return items;
         } catch (SQLException e) {
-            System.err.println("System: error converting ResultSet to Inventory.");
+            System.err.println("Server: error converting ResultSet to Inventory.");
             e.printStackTrace();
             return null;
         }
@@ -149,7 +184,7 @@ public class DatabaseController implements DBConstants {
             else
                 return new NonElectricalItem(id, name, quantity, price, supplierId);
         } catch (SQLException e) {
-            System.err.println("System: error converting ResultSet to Item object");
+            System.err.println("Server: error converting ResultSet to Item object");
             e.printStackTrace();
             return null;
         }
@@ -163,7 +198,7 @@ public class DatabaseController implements DBConstants {
             supplierListResult.close();
             return new SupplierList(suppliers);
         } catch (SQLException e) {
-            System.err.println("System: error converting ResultSet to CustomerList");
+            System.err.println("Server: error converting ResultSet to CustomerList");
             e.printStackTrace();
             return null;
         }
@@ -186,7 +221,7 @@ public class DatabaseController implements DBConstants {
             else
                 return null;
         } catch (SQLException e) {
-            System.err.println("System: error converting ResultSet to Customer object");
+            System.err.println("Server: error converting ResultSet to Customer object");
             e.printStackTrace();
             return null;
         }
@@ -200,7 +235,7 @@ public class DatabaseController implements DBConstants {
             customerListResult.close();
             return new CustomerList(customers);
         } catch (SQLException e) {
-            System.err.println("System: error converting ResultSet to CustomerList");
+            System.err.println("Server: error converting ResultSet to CustomerList");
             e.printStackTrace();
             return null;
         }
@@ -222,7 +257,49 @@ public class DatabaseController implements DBConstants {
             else
                 return null;
         } catch (SQLException e) {
-            System.err.println("System: error converting ResultSet to Customer object");
+            System.err.println("Server: error converting ResultSet to Customer object");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Order convertOrderResult(ResultSet orderResult) {
+        if (orderResult == null)
+            return null;
+
+        try {
+            if (orderResult.next()) {
+                int orderId = orderResult.getInt("OrderId");
+                String date = orderResult.getString("Date");
+                Order order = new Order();
+                order.setId(orderId);
+                order.setDate(date);
+                return order;
+            } else return null;
+        }
+        catch (SQLException e) {
+            System.err.println("Server: error converting ResultSet to Order object\n");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private OrderLine convertOrderLineResult(ResultSet orderLineResult) {
+        if (orderLineResult == null)
+            return null;
+
+        try {
+            String toolId = orderLineResult.getString("ToolId");
+            int quantity = orderLineResult.getInt("Quantity");
+
+            Item item = getItem("toolId", toolId);
+            if (item != null)
+                return new OrderLine(item, quantity);
+            else
+                return null;
+        }
+        catch (SQLException e) {
+            System.err.println("Server: error converting ResultSet to OrderLine object\n");
             e.printStackTrace();
             return null;
         }
@@ -232,12 +309,12 @@ public class DatabaseController implements DBConstants {
         try {
             jdbc_connection.close();
         } catch (SQLException e) {
-            System.err.println("System: error when closing connection to " + CONNECTION_INFO);
+            System.err.println("Server: error when closing connection to " + CONNECTION_INFO);
         }
     }
 
-//    public static void main(String[] args) {
-//        DatabaseController dbController = new DatabaseController();
+    public static void main(String[] args) {
+        DatabaseController dbController = new DatabaseController();
 //        CustomerList customerList = dbController.getCustomerList("lastName", "Smith");
 //        System.out.println(customerList.getCustomerStringList());
 //
@@ -249,5 +326,8 @@ public class DatabaseController implements DBConstants {
 //        SupplierList supplierList = dbController.getSupplierList("supplierId", "all");
 //        System.out.println(supplierList);
 //        dbController.close();
-//    }
+
+        Order order = dbController.getOrder("date", "2020-11-27");
+        System.out.println(order);
+    }
 }

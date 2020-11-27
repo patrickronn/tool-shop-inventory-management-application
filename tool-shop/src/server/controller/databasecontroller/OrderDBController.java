@@ -21,10 +21,50 @@ public class OrderDBController implements DBConstants{
             return !resultSet.isBeforeFirst();
 
         } catch (SQLException e) {
-            System.err.println("System: error when querying for order ID");
+            System.err.println("Server: error when querying for order ID");
             e.printStackTrace();
             return false;
         }
+    }
+
+    public ResultSet getOrder(String searchParam, String searchValue) {
+        if (searchParam.equals("date")) {
+            String query = "SELECT * FROM " + ORDER_TABLE_NAME + " WHERE Date = ?";
+            try {
+                statement = jdbc_connection.prepareStatement(query);
+                statement.setDate(1, Date.valueOf(searchValue));
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.isBeforeFirst())
+                    return resultSet;
+                else {
+                    statement.close();
+                    return null;
+                }
+            } catch (SQLException e) {
+                System.err.println("Server: error when retrieving order list:\n" + e.getMessage());
+                return null;
+            }
+        } else return null;
+    }
+
+    public ResultSet getOrderLines(String searchParam, String searchValue) {
+        if (searchParam.equals("orderId")) {
+            String query = "SELECT * FROM " + ORDERLINE_TABLE_NAME + " WHERE OrderId = ?";
+            try {
+                statement = jdbc_connection.prepareStatement(query);
+                statement.setInt(1, Integer.parseInt(searchValue));
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.isBeforeFirst())
+                    return resultSet;
+                else {
+                    statement.close();
+                    return null;
+                }
+            } catch (SQLException e) {
+                System.err.println("Server: error when retrieving order lines: \n" + e.getMessage());
+                return null;
+            }
+        } else return null;
     }
 
     public boolean insertOrder(int orderId, String date) {
@@ -38,14 +78,14 @@ public class OrderDBController implements DBConstants{
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.err.println("System: error when inserting new order.");
+            System.err.println("Server: error when inserting new order.");
             e.printStackTrace();
             return false;
         } finally {
             try {
                 statement.close();
             } catch (SQLException e) {
-                System.err.println("System: error closing PreparedStatement object.");
+                System.err.println("Server: error closing PreparedStatement object.");
             }
         }
     }
@@ -64,14 +104,14 @@ public class OrderDBController implements DBConstants{
             statement.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.err.println("System: error when inserting new order line.");
+            System.err.println("Server: error when inserting new order line.");
             e.printStackTrace();
             return false;
         } finally {
             try {
                 statement.close();
             } catch (SQLException e) {
-                System.err.println("System: error closing PreparedStatement object.");
+                System.err.println("Server: error closing PreparedStatement object.");
             }
         }
     }

@@ -29,6 +29,27 @@ public class InventoryDBController implements DBConstants{
         } else return null;
     }
 
+    public ResultSet getItemResultSet(String searchParam, String searchValue) {
+        if (searchParam.equals("toolId")) {
+            // Query for all tool info for a specific item
+            String query = "SELECT " + TOOL_TABLE_NAME + ".*, " + ELECTRICAL_TOOL_TABLE_NAME +
+                    ".PowerType FROM " + TOOL_TABLE_NAME + " LEFT JOIN " + ELECTRICAL_TOOL_TABLE_NAME +
+                    " ON " + TOOL_TABLE_NAME + ".ToolId = " + ELECTRICAL_TOOL_TABLE_NAME + ".ToolId" +
+                    " WHERE " + TOOL_TABLE_NAME + ".ToolId = ?";
+            try {
+                // Prepare statement and return
+                if(statement != null) statement.close();
+                statement = jdbc_connection.prepareStatement(query);
+                statement.setInt(1, Integer.parseInt(searchValue));
+                return statement.executeQuery();
+            }
+            catch (SQLException e) {
+                System.err.println("System: error when retrieving item:\n" + e.getMessage());
+                return null;
+            }
+        } else return null;
+    }
+
     public boolean decreaseItemQuantity(String searchParam, String searchValue, String quantityToRemove) {
         if (searchParam.equals("toolId")) {
             String updateString = "UPDATE " + TOOL_TABLE_NAME +

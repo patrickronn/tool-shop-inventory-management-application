@@ -196,7 +196,7 @@ public class Order implements Serializable {
         int i = 1;
         for (OrderLine orderLine : orderLines) {
             // Append each order line's information
-            sb.append(i).append(". Name:").append(orderLine.getItemToOrder().getName());
+            sb.append(i).append(". Tool ordered: ").append(orderLine.getItemToOrder().getName());
             sb.append(" (Amount ordered: ").append(orderLine.getQuantityToOrder()).append(")\n");
             i++;
         }
