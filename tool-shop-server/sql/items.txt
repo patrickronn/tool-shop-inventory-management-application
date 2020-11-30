@@ -1,0 +1,42 @@
+ToolId;Name;Type;Quantity;Price;SupplierId;PowerType
+1000;Knock Bits;Non-Electrical;88;12.67;8015;null
+1001;Widgets;Non-Electrical;10;35.5;8004;null
+1002;Grommets;Non-Electrical;20;23.45;8001;null
+1003;Wedges;Non-Electrical;15;10.15;8020;null
+1004;Wing Bats;Non-Electrical;11;11.25;8003;null
+1005;Twinkies;Non-Electrical;75;15.75;8012;null
+1006;Wiggles;Non-Electrical;30;12.34;8020;null
+1007;Bing Bobs;Non-Electrical;25;2.39;8005;null
+1008;Wog Wits;Non-Electrical;300;19.99;8004;null
+1009;Barney Bits;Non-Electrical;21;23.59;8006;null
+1010;Willie Widgits;Non-Electrical;89;12.99;8003;null
+1011;Barge Bogs;Non-Electrical;35;2.99;8011;null
+1012;Poggy Pogs;Non-Electrical;99;1.1;8002;null
+1013;Pardle Pins;Non-Electrical;400;0.69;8013;null
+1014;Piddley Wicks;Non-Electrical;54;5.19;8013;null
+1015;Iggy Orks;Non-Electrical;22;49.95;8010;null
+1016;Crank Cribs;Non-Electrical;888;0.29;8005;null
+1017;Thingies;Non-Electrical;67;45.98;8008;null
+1018;Orf Dappers;Non-Electrical;32;19.98;8018;null
+1019;Piff Knocks;Non-Electrical;82;4.95;8002;null
+1020;Knit Piks;Non-Electrical;66;6.75;8015;null
+1021;Piddley Pins;Non-Electrical;370;0.25;8020;null
+1022;Tic Tocs;Non-Electrical;87;1.36;8014;null
+1023;Tin Wits;Non-Electrical;23;5.67;8014;null
+1024;Thinga-ma-bobs;Non-Electrical;40;10.98;8012;null
+1025;Fling Flobs;Non-Electrical;254;2.33;8009;null
+1026;Barn Bins;Non-Electrical;45;88.67;8006;null
+1027;Flap Wrappers;Non-Electrical;89;44.88;8009;null
+1028;Pong Pangs;Non-Electrical;2345;0.1;8002;null
+1029;Oof Tongs;Non-Electrical;345;8.49;8011;null
+1030;Nic Nacs;Non-Electrical;238;2.99;8015;null
+1031;Tork Tins;Electrical;376;0.95;8012;100 W
+1032;Lilly Larks;Electrical;56;12.99;8007;100 W
+1033;Minnie Morks;Electrical;800;1.95;8007;100 W
+1034;Cork Handles;Electrical;654;2.66;8016;150 W
+1035;Ding Darns;Electrical;1208;0.15;8019;150 W
+1036;Erk Orks;Electrical;498;3.99;8017;150 W
+1037;Foo Figs;Electrical;234;5.89;8018;200 W
+1038;Googly Eyes;Electrical;756;6.99;8001;200 W
+1039;Handy Pandies;Electrical;321;4.35;8017;250 W
+1040;Inny Outies;Electrical;219;3.45;8010;250 W
