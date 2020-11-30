@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eclipse-userlibraries />
+<eclipse-userlibraries>
+  <library name="lib">
+    <archive path="/Users/patrickronn/Development/project-ensf-607-608/tool-shop-client/lib/forms_rt.jar" />
+  </library>
+</eclipse-userlibraries>
 

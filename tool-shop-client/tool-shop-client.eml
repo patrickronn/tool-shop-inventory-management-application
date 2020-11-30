@@ -3,7 +3,7 @@
 	<output-test url="file://$MODULE_DIR$/out/test/tool-shop-client"/>
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
-	<lib name="com" scope="COMPILE">
-		<relative-module-cls project-related="file://$PROJECT_DIR$/com"/>
-	</lib>
+	<levels>
+		<level name="lib" value="project"/>
+	</levels>
 </component>
