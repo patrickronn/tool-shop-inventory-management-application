@@ -1,5 +1,8 @@
 package server.controller.databasecontroller;
 
+/**
+ * Contains the constant values used by many database controllers.
+ */
 public interface DBConstants {
     String DATABASE_NAME = "project_ensf_607_608";
 

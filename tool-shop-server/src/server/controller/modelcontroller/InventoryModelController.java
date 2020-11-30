@@ -8,10 +8,29 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+/**
+ * Manages the server-side model related to inventory components.
+ * Uses messagemodel package for serializing and deserializing objects with connected clients.
+ */
 public class InventoryModelController {
+    /**
+     * Serializes objects and sends them to client.
+     */
     private Serializer serializer;
+
+    /**
+     * Deserialize objects received from the client
+     */
     private Deserializer deserializer;
+
+    /**
+     * Queries for and makes updates to inventory related information
+     */
     private DatabaseController databaseController;
+
+    /**
+     * Manages the supplier list on the server.
+     */
     private SupplierList supplierList;
 
     public InventoryModelController(Serializer s, Deserializer ds, DatabaseController dbc) {
@@ -21,10 +40,18 @@ public class InventoryModelController {
         loadSupplierList();
     }
 
+    /**
+     * Retrieves all supplier information from the database and stores it in supplierList.
+     */
     private void loadSupplierList() {
         this.supplierList = databaseController.getSupplierList("supplierId", "all");
     }
 
+    /**
+     * Translates Messages that have object type Inventory and manages the action requested.
+     *
+     * @param message a Message containing a Inventory object and requested action
+     */
     @SuppressWarnings("unchecked")
     public void interpretInventoryMessage(Message message) {
         switch (message.getAction()) {
@@ -39,6 +66,12 @@ public class InventoryModelController {
         }
     }
 
+    /**
+     * Retrieves an LinkedHashSet of Items from the database. Retrieval is based on
+     * search parameters send by the client, then returns the resulting item list back to the client.
+     *
+     * @param searchParamMap a Map of search parameters used for querying items
+     */
     private void queryItemList(Map<String, String> searchParamMap) {
         String searchParamType = searchParamMap.get("paramType");
         String searchParamValue = searchParamMap.get("paramValue");
@@ -54,6 +87,12 @@ public class InventoryModelController {
         } else serializer.sendServerResponse("failed");
     }
 
+    /**
+     * Decreases the quantity of an item based on search parameters provided by client.
+     * Notifies the client if the decrease was successfully executed in database.
+     *
+     * @param searchParamMap
+     */
     private void decreaseItemQuantity(Map<String, String> searchParamMap) {
         String searchParamType = searchParamMap.get("paramType");
         String searchParamValue = searchParamMap.get("paramValue");
@@ -65,6 +104,11 @@ public class InventoryModelController {
         else { serializer.sendServerResponse("failed"); }
     }
 
+    /**
+     * Translates Messages that have object type Order and manages the action requested.
+     *
+     * @param message a Message containing an Order object and a requested action
+     */
     public void interpretOrderMessage(Message message) {
         switch (message.getAction()) {
             case "insert":
@@ -75,6 +119,11 @@ public class InventoryModelController {
         }
     }
 
+    /**
+     * Validates the order then stores the order information to the database.
+     * Notifies the client if the order was successfully saved.
+     * @param order an Order to insert to the database
+     */
     private void insertOrder(Order order) {
         // Check order validity
         if (!checkOrderIsValid(order)) {

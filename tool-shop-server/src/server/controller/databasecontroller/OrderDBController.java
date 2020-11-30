@@ -2,8 +2,17 @@ package server.controller.databasecontroller;
 
 import java.sql.*;
 
+/**
+ * Develops PreparedStatements to retrieve information from and make updates to the database
+ */
 public class OrderDBController implements DBConstants{
+    /**
+     * Connection to mySQL db
+     */
     private Connection jdbc_connection;
+    /**
+     * Used to communicate with db
+     */
     private PreparedStatement statement;
 
     public OrderDBController(Connection jdbc_connection) {
@@ -11,6 +20,10 @@ public class OrderDBController implements DBConstants{
         this.statement = null;
     }
 
+    /**
+     * @param orderId the order id to check
+     * @return true if order id exists, otherwise false if it doesn't exist
+     */
     public boolean isOrderIdUnique(int orderId) {
         String query = "SELECT * FROM " + ORDER_TABLE_NAME + " WHERE OrderId = ?";
         try {
@@ -27,6 +40,11 @@ public class OrderDBController implements DBConstants{
         }
     }
 
+    /**
+     * @param searchParam parameter type
+     * @param searchValue parameter value
+     * @return a ResultSet containing order info
+     */
     public ResultSet getOrder(String searchParam, String searchValue) {
         if (searchParam.equals("date")) {
             String query = "SELECT * FROM " + ORDER_TABLE_NAME + " WHERE Date = ?";
@@ -47,6 +65,11 @@ public class OrderDBController implements DBConstants{
         } else return null;
     }
 
+    /**
+     * @param searchParam parameter type
+     * @param searchValue parameter value
+     * @return a ResultSet containing order line info
+     */
     public ResultSet getOrderLines(String searchParam, String searchValue) {
         if (searchParam.equals("orderId")) {
             String query = "SELECT * FROM " + ORDERLINE_TABLE_NAME + " WHERE OrderId = ?";
@@ -67,6 +90,11 @@ public class OrderDBController implements DBConstants{
         } else return null;
     }
 
+    /**
+     * @param orderId id of the order to insert
+     * @param date date of the order
+     * @return true if order was successfully added
+     */
     public boolean insertOrder(int orderId, String date) {
         String insertString = "INSERT INTO " + ORDER_TABLE_NAME + "(OrderId, Date) VALUES (?, ?)";
 
@@ -90,6 +118,13 @@ public class OrderDBController implements DBConstants{
         }
     }
 
+    /**
+     * @param orderId order id to attach the order line to
+     * @param toolId the tool which to order
+     * @param supplierId the supplier which to order from
+     * @param quantity the amount of the tool to order
+     * @return true if order line was successfully added
+     */
     public boolean insertOrderLine(int orderId, int toolId, int supplierId, int quantity) {
         String insertString = "INSERT INTO " + ORDERLINE_TABLE_NAME +
                 "(OrderId, ToolId, SupplierId, Quantity) VALUES (?, ?, ?, ?)";

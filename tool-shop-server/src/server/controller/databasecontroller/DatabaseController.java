@@ -10,10 +10,28 @@ import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+/**
+ * This class manages the communications between server and the mySQL database.
+ */
 public class DatabaseController implements DBConstants {
+    /**
+     * Manages customer related tables
+     */
     private CustomerDBController customerDBController;
+
+    /**
+     * Manages inventory related tables
+     */
     private InventoryDBController inventoryDBController;
+
+    /**
+     * Manages order related tables
+     */
     private OrderDBController orderDBController;
+
+    /**
+     * Connects Java program with MySQL server
+     */
     private Connection jdbc_connection;
 
     public DatabaseController() {
@@ -39,6 +57,11 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param searchParam the parameter type (e.g. "toolId")
+     * @param searchValue the value of the parameter (e.g. "all" for all Items)
+     * @return a LinkedHashSet of Items that match the search parameters
+     */
     public LinkedHashSet<Item> getItemList(String searchParam, String searchValue) {
         ResultSet inventoryToolsResult = inventoryDBController.getItemListResultSet(searchParam, searchValue);
         if (inventoryToolsResult != null)
@@ -47,6 +70,11 @@ public class DatabaseController implements DBConstants {
             throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
     }
 
+    /**
+     * @param searchParam the parameter type (e.g. "toolId")
+     * @param searchValue the value of the parameter (e.g. id of an Item)
+     * @return an Item that matches the search parameters
+     */
     public Item getItem(String searchParam, String searchValue) throws SQLException {
         ResultSet itemResult = inventoryDBController.getItemResultSet(searchParam, searchValue);
         if (itemResult != null && itemResult.next())
@@ -55,6 +83,11 @@ public class DatabaseController implements DBConstants {
             throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
     }
 
+    /**
+     * @param searchParam the parameter type (e.g. "supplierId")
+     * @param searchValue the parameter value (e.g. "all" for all Suppliers)
+     * @return a LinkedHashSet of Suppliers that match the parameters
+     */
     public SupplierList getSupplierList(String searchParam, String searchValue) {
         ResultSet supplierListResult = inventoryDBController.getSupplierListResultSet(searchParam, searchValue);
         if (supplierListResult != null)
@@ -63,11 +96,22 @@ public class DatabaseController implements DBConstants {
             throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
     }
 
+    /**
+     * @param searchParam the parameter type (e.g. "toolId")
+     * @param searchValue the parameter value (e.g. id of a Tool)
+     * @param quantityToRemove the amount to decrease the tool's quantity by
+     * @return true if quantity was successfully decreased in DB; otherwise false
+     */
     public boolean decreaseItemQuantity(String searchParam, String searchValue, String quantityToRemove) {
         boolean decreaseSucceeded = inventoryDBController.decreaseItemQuantity(searchParam, searchValue, quantityToRemove);
         return decreaseSucceeded;
     }
 
+    /**
+     * @param searchParam the parameter type (e.g. "customerId", "lastName", or "customerType")
+     * @param searchValue the parameter value
+     * @return a CustomerList that match the search parameters
+     */
     public CustomerList getCustomerList(String searchParam, String searchValue) {
         ResultSet customerListResult = customerDBController.getCustomerListResultSet(searchParam, searchValue);
         if (customerListResult != null)
@@ -76,20 +120,39 @@ public class DatabaseController implements DBConstants {
             throw new IllegalArgumentException(searchParam + ": " + searchValue + " is not a proper query");
     }
 
+    /**
+     * @param customer a Customer to add into the db
+     * @return the id assigned to the newly inserted customer
+     */
     public int insertCustomer(Customer customer) {
         int customerIdAssigned = customerDBController.insertCustomer(customer.toMap());
         return customerIdAssigned;
     }
 
+    /**
+     * @param customer the Customer to update
+     * @return true if the customer was found and properly updated
+     */
     public boolean updateCustomer(Customer customer) {
         return customerDBController.updateCustomer(customer.toMap());
     }
 
+    /**
+     * @param customer the Customer to remove
+     * @return true if the customer was found and deleted
+     */
     public boolean deleteCustomer(Customer customer) {
         Map<String, String> customerInfoMap = customer.toMap();
         return customerDBController.deleteCustomer(customerInfoMap);
     }
 
+    /**
+     * Saves order information to the database. Also includes a check to determine that
+     * the order ID is unique.
+     *
+     * @param order the Order to insert
+     * @return true if the order was successfully saved to the database
+     */
     public boolean insertOrder(Order order) {
         // Ensure order ID doesn't exist
         while(!orderDBController.isOrderIdUnique(order.getId())) {
@@ -112,6 +175,10 @@ public class DatabaseController implements DBConstants {
         else return false;
     }
 
+    /**
+     * @param orderLine OrderLine to insert to db
+     * @return true if orderline successfully inserted
+     */
     private boolean insertOrderLine(OrderLine orderLine) {
         int orderId = orderLine.getOrder().getId();
         int toolId = orderLine.getItemToOrder().getId();
@@ -127,6 +194,11 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param searchParam parameter type (e.g. "orderId")
+     * @param searchValue parameter value (e.g. the id of an Order object)
+     * @return Order that matches the search parameters; else null
+     */
     public Order getOrder(String searchParam, String searchValue) {
         ResultSet orderResult = orderDBController.getOrder(searchParam, searchValue);
         Order order = convertOrderResult(orderResult);
@@ -145,6 +217,10 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param order the Order to include orderlines to
+     * @throws SQLException error reading from the ResultSet returned
+     */
     private void addOrderLines(Order order) throws SQLException {
         String orderId = String.valueOf(order.getId());
         ResultSet orderLinesResult = orderDBController.getOrderLines("orderId", orderId);
@@ -153,8 +229,10 @@ public class DatabaseController implements DBConstants {
             order.addOrderLine(convertOrderLineResult(orderLinesResult));
     }
 
-
-
+    /**
+     * @param inventoryToolsResult ResultSet from a query for a list of items/tools
+     * @return LinkedHashSet of Items
+     */
     private LinkedHashSet<Item> convertItemListResultSet(ResultSet inventoryToolsResult) {
         try {
             LinkedHashSet<Item> items = new LinkedHashSet<>();
@@ -169,6 +247,10 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param itemResult ResultSet to read item/tool's information
+     * @return Item object retrieved
+     */
     private Item convertItemResultSet(ResultSet itemResult) {
         try {
             int id = itemResult.getInt("ToolId");
@@ -190,6 +272,10 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param supplierListResult ResultSet from a query for a list of suppliers
+     * @return SupplierList object
+     */
     private SupplierList convertSupplierListResultSet(ResultSet supplierListResult) {
         try {
             LinkedHashSet<Supplier> suppliers = new LinkedHashSet<>();
@@ -204,6 +290,10 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param supplierResult ResultSet to read supplier information
+     * @return Supplier object retrieved
+     */
     private Supplier convertSupplierResultSet(ResultSet supplierResult) {
         try {
             int id = supplierResult.getInt("SupplierId");
@@ -227,6 +317,10 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param customerListResult ResultSet from a query for a list of customers
+     * @return CustomerList object
+     */
     private CustomerList convertCustomerListResultSet(ResultSet customerListResult) {
         try {
             LinkedHashSet<Customer> customers = new LinkedHashSet<>();
@@ -241,6 +335,10 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param customerResult ResultSet to read customer information
+     * @return Customer object retrieved
+     */
     private Customer convertCustomerResultSet(ResultSet customerResult) {
         try {
             int id = customerResult.getInt("CustomerId");
@@ -263,6 +361,10 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param orderResult ResultSet containing order info
+     * @return Order object retrieved
+     */
     private Order convertOrderResult(ResultSet orderResult) {
         if (orderResult == null)
             return null;
@@ -284,6 +386,10 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * @param orderLineResult ResultSet containing order line info
+     * @return OrderLine object retrieved
+     */
     private OrderLine convertOrderLineResult(ResultSet orderLineResult) {
         if (orderLineResult == null)
             return null;
@@ -305,6 +411,9 @@ public class DatabaseController implements DBConstants {
         }
     }
 
+    /**
+     * Closes connection to db
+     */
     public void close() {
         try {
             jdbc_connection.close();
@@ -314,7 +423,7 @@ public class DatabaseController implements DBConstants {
     }
 
     public static void main(String[] args) {
-        DatabaseController dbController = new DatabaseController();
+//        DatabaseController dbController = new DatabaseController();
 //        CustomerList customerList = dbController.getCustomerList("lastName", "Smith");
 //        System.out.println(customerList.getCustomerStringList());
 //
@@ -326,8 +435,8 @@ public class DatabaseController implements DBConstants {
 //        SupplierList supplierList = dbController.getSupplierList("supplierId", "all");
 //        System.out.println(supplierList);
 //        dbController.close();
-
-        Order order = dbController.getOrder("date", "2020-11-27");
-        System.out.println(order);
+//
+//        Order order = dbController.getOrder("date", "2020-11-27");
+//        System.out.println(order);
     }
 }

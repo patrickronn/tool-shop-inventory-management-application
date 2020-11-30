@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class CustomerModelController {
     /**
-     * Serializes objects and sending them to server.
+     * Serializes objects and sends them to server.
      */
     private Serializer serializer;
 

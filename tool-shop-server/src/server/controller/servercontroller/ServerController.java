@@ -14,6 +14,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class is used to manage new client connections to the server via a thread pool.
+ */
 public class ServerController {
     /**
      * Waits for requests to come in through the network.
@@ -49,6 +52,9 @@ public class ServerController {
         }
     }
 
+    /**
+     * Starts the server and waits for incoming client connections
+     */
     public void runServer() {
         try {
             while (true) {
@@ -64,12 +70,18 @@ public class ServerController {
         }
     }
 
+    /**
+     * Manages a client in the pool by instantiating a new model controller
+     */
     public void addClientToPool() {
         ModelController modelController = new ModelController(
                 this, new Serializer(), new Deserializer(), new DatabaseController());
         clientPool.execute(modelController);
     }
 
+    /**
+     * Closes the server by closing all sockets and awaiting for all clients to finish comms with server
+     */
     public void shutdown() {
         clientPool.shutdown();
         System.out.println("Server: now shutting down.");
@@ -86,6 +98,7 @@ public class ServerController {
         }
     }
 
+    // Getters below
     public OutputStream getClientSocketOutStream() {
         try {
             return clientSocket.getOutputStream();

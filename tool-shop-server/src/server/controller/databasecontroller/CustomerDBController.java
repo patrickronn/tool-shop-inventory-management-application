@@ -3,8 +3,18 @@ package server.controller.databasecontroller;
 import java.sql.*;
 import java.util.Map;
 
+/**
+ * Develops PreparedStatements to retrieve information from and make updates to the database
+ */
 public class CustomerDBController implements DBConstants {
+    /**
+     * Connection to mySQL db
+     */
     private Connection jdbc_connection;
+
+    /**
+     * Used to communicate with db
+     */
     private PreparedStatement statement;
 
     public CustomerDBController(Connection jdbc_connection) {
@@ -12,6 +22,11 @@ public class CustomerDBController implements DBConstants {
         this.statement = null;
     }
 
+    /**
+     * @param searchParam parameter type
+     * @param searchValue parameter value
+     * @return a ResultSet containing a list of customer info
+     */
     public ResultSet getCustomerListResultSet(String searchParam, String searchValue) {
         String columnName = convertParamToColName(searchParam);
 
@@ -30,6 +45,10 @@ public class CustomerDBController implements DBConstants {
         }
     }
 
+    /**
+     * @param customerInfoMap a Map of customer information attributes
+     * @return the automatically generated id assigned by the database
+     */
     public int insertCustomer(Map<String, String> customerInfoMap) {
         String insertString = "INSERT INTO " + CUSTOMER_TABLE_NAME +
                 "(LName, FName, Type, PhoneNum, Address, PostalCode) VALUES (?, ?, ?, ?, ?, ?)";
@@ -56,6 +75,10 @@ public class CustomerDBController implements DBConstants {
         }
     }
 
+    /**
+     * @param customerInfoMap a Map of customer information attributes
+     * @return true if customer was updated successfully
+     */
     public boolean updateCustomer(Map<String, String> customerInfoMap) {
         String updateString = "UPDATE " + CUSTOMER_TABLE_NAME +
                 " SET LName = ?, FName = ?, Type = ?, PhoneNum = ?, Address = ?, PostalCode = ?" +
@@ -80,6 +103,10 @@ public class CustomerDBController implements DBConstants {
         }
     }
 
+    /**
+     * @param customerInfoMap a Map of customer information attributes
+     * @return true if customer was deleted successfully
+     */
     public boolean deleteCustomer(Map<String, String> customerInfoMap) {
         String deleteString = "DELETE FROM " + CUSTOMER_TABLE_NAME + " WHERE CustomerId = ?";
 
@@ -101,6 +128,11 @@ public class CustomerDBController implements DBConstants {
         }
     }
 
+    /**
+     * Helper method to translate search parameters into SQL table column names
+     * @param searchParam search parameter to convert
+     * @return an existing SQL table column name
+     */
     private String convertParamToColName(String searchParam) {
         switch (searchParam) {
             case "customerId":
@@ -114,6 +146,12 @@ public class CustomerDBController implements DBConstants {
         }
     }
 
+    /**
+     * Adds values to a prepared statement based on customer info map
+     * @param statement prepared statement to add values to
+     * @param customerInfoMap a Map of customer info to add to the statement
+     * @throws SQLException throws exception if there's errors adding values to the statement
+     */
     private void setStatementValuesFromMap(PreparedStatement statement, Map<String, String> customerInfoMap) throws SQLException {
         setStatementValue(statement, 1, "LName", customerInfoMap.get("lastName"));
         setStatementValue(statement, 2, "FName", customerInfoMap.get("firstName"));
@@ -123,6 +161,13 @@ public class CustomerDBController implements DBConstants {
         setStatementValue(statement, 6, "PostalCode", customerInfoMap.get("postalCode"));
     }
 
+    /**
+     * @param statement prepared statement to add value to
+     * @param index the index of the wildcard in the prepared statement (one-indexed)
+     * @param columnName used to recognize the type of value required
+     * @param value the value to add
+     * @throws SQLException errors adding value to the statement
+     */
     private void setStatementValue(PreparedStatement statement, int index, String columnName, String value) throws SQLException {
         switch (columnName) {
             case "CustomerId":

@@ -2,8 +2,18 @@ package server.controller.databasecontroller;
 
 import java.sql.*;
 
+/**
+ * Develops PreparedStatements to retrieve information from and make updates to the database
+ */
 public class InventoryDBController implements DBConstants{
+    /**
+     * Connection to mySQL db
+     */
     private Connection jdbc_connection;
+
+    /**
+     * Used to communicate with db
+     */
     private PreparedStatement statement;
 
     public InventoryDBController(Connection jdbc_connection) {
@@ -11,6 +21,11 @@ public class InventoryDBController implements DBConstants{
         this.statement = null;
     }
 
+    /**
+     * @param searchParam parameter type
+     * @param searchValue parameter value
+     * @return a ResultSet from querying a list of items
+     */
     public ResultSet getItemListResultSet(String searchParam, String searchValue) {
         // Query for all tool items info including power type for Electrical items
         if (searchParam.equals("toolId") && searchValue.equals("all")) {
@@ -29,6 +44,11 @@ public class InventoryDBController implements DBConstants{
         } else return null;
     }
 
+    /**
+     * @param searchParam parameter type
+     * @param searchValue parameter value
+     * @return a ResultSet from querying an item
+     */
     public ResultSet getItemResultSet(String searchParam, String searchValue) {
         if (searchParam.equals("toolId")) {
             // Query for all tool info for a specific item
@@ -50,6 +70,12 @@ public class InventoryDBController implements DBConstants{
         } else return null;
     }
 
+    /**
+     * @param searchParam parameter type
+     * @param searchValue parameter value
+     * @param quantityToRemove quantity to remove as a String
+     * @return true if decrease was successful
+     */
     public boolean decreaseItemQuantity(String searchParam, String searchValue, String quantityToRemove) {
         if (searchParam.equals("toolId")) {
             String updateString = "UPDATE " + TOOL_TABLE_NAME +
@@ -74,6 +100,11 @@ public class InventoryDBController implements DBConstants{
         } else return false;
     }
 
+    /**
+     * @param searchParam parameter type
+     * @param searchValue parameter value
+     * @return ResultSet containing a list of customer info
+     */
     public ResultSet getSupplierListResultSet(String searchParam, String searchValue) {
         // Query for all supplier info including import tax for International Suppliers
         if (searchParam.equals("supplierId") && searchValue.equals("all")) {
