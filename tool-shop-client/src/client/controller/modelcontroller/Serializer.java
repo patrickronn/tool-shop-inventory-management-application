@@ -7,14 +7,24 @@ import java.io.Serializable;
 
 import messagemodel.*;
 
+/**
+ * Sends objects to the server
+ */
 public class Serializer {
 
+    /**
+     * Stream connecting to server socket comm.
+     */
     private ObjectOutputStream objectOut;
 
     public Serializer() {
         this.objectOut = null;
     }
 
+    /**
+     * Creates the object out stream
+     * @param outStream socket to server's output stream
+     */
     public void openObjectOutStream(OutputStream outStream) {
         try {
             objectOut = new ObjectOutputStream(outStream);
@@ -24,6 +34,9 @@ public class Serializer {
         }
     }
 
+    /**
+     * Closes the stream
+     */
     public void closeObjectOutStream() {
         try {
             objectOut.close();
@@ -34,17 +47,17 @@ public class Serializer {
     }
 
     /**
-     * Used to notify the server of the incoming object.
-     * @param objectType String of class type of the serializable object to send
+     * Sends Messages to the server which contain objects from messagemodel package.
+     * @param message a Message object to send
      */
-    private void notifyObjectType(String objectType) {
-        sendSerializableObject(objectType);
-    }
-
     public void sendMessage(Message message) {
         sendSerializableObject(message);
     }
 
+    /**
+     * Sends a Serializable object to the server.
+     * @param object Serializable object to send
+     */
     private void sendSerializableObject(Serializable object) {
         try {
             objectOut.writeObject(object);

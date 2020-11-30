@@ -8,6 +8,9 @@ import messagemodel.*;
 
 import java.util.LinkedHashSet;
 
+/**
+ * Initializes the Client Tool Shop Application.
+ */
 public class ClientInitializer {
     public static void initialize() {
         CustomerList customerList = new CustomerList(new LinkedHashSet<Customer>());

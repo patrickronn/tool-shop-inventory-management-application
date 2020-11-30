@@ -11,9 +11,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages customer management system's interactions with the user. Reads input from GUI and sends customer model
+ * related requests to the model controller
+ */
 public class CustomerViewController {
 
+    /**
+     * GUI for customer management
+     */
     private CustomerManagementGUI customerManagementGUI;
+
+    /**
+     * Controller for managing the customer model
+     */
     private CustomerModelController customerModelController;
 
     public CustomerViewController(CustomerManagementGUI gui, CustomerModelController customerModelController) {
@@ -23,6 +34,9 @@ public class CustomerViewController {
         addActionListeners();
     }
 
+    /**
+     * Adds listeners to GUI components
+     */
     public void addActionListeners() {
         customerManagementGUI.addClearSearchListener(new ClearSearchListener());
         customerManagementGUI.addClearCustInfoListener(new ClearCustomerInfoListener());
@@ -32,6 +46,10 @@ public class CustomerViewController {
         customerManagementGUI.addSaveButtonListener(new SaveInfoListener());
     }
 
+    /**
+     * Updates the customer form
+     * @param customerInfoMap a Map of customer info
+     */
     public void loadCustomerInfoForm(Map<String, String> customerInfoMap) {
         if (customerInfoMap != null) {
             customerManagementGUI.setCustomerIdStringValue(customerInfoMap.get("customerId"));
@@ -44,6 +62,10 @@ public class CustomerViewController {
         }
     }
 
+    /**
+     * Retrieves inputted to customer form
+     * @return a Map of customer info
+     */
     public Map<String, String> readCustomerInfo() {
         Map<String, String> customerInfoMap = new HashMap<>();
         customerInfoMap.put("customerId", customerManagementGUI.getCustomerIdStringValue());
@@ -57,12 +79,19 @@ public class CustomerViewController {
         return customerInfoMap;
     }
 
+    /**
+     * Updates the search results
+     * @param searchResults a Map of search results
+     */
     public void loadSearchResults(ArrayList<String> searchResults) {
         customerManagementGUI.clearSearchResults();
         for (String searchResult: searchResults)
             customerManagementGUI.addSearchResult(searchResult);
     }
 
+    /**
+     * ActionListener that clears the search results
+     */
     class ClearSearchListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -74,6 +103,9 @@ public class CustomerViewController {
         }
     }
 
+    /**
+     * ActionListener that clears customer info fields
+     */
     class ClearCustomerInfoListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -81,6 +113,10 @@ public class CustomerViewController {
         }
     }
 
+    /**
+     * ActionListener that interprets user input search parameters and sends the request to model controller.
+     * Includes validation check to ensure user entered proper search parameters
+     */
     class SearchParamListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -121,6 +157,10 @@ public class CustomerViewController {
         }
     }
 
+    /**
+     * ActionListener that monitors the search result selected by the user. Whenever a user changes
+     * their selection, the customer info form will update.
+     */
     class SearchResultSelectionListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
@@ -152,6 +192,10 @@ public class CustomerViewController {
         }
     }
 
+    /**
+     * ActionListener that interprets a user saving the customer info form. Sends the request to the model controller.
+     * Includes methods for requesting to update an existing customer or request a new customer to be created.
+     */
     class SaveInfoListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -234,6 +278,10 @@ public class CustomerViewController {
         }
     }
 
+    /**
+     * ActionListener that interprets a user delete the customer info form. Sends the request to the model controller.
+     * If the customer was successfully removed, it will remove it from the search results list
+     */
     class CustomerDeleteListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {

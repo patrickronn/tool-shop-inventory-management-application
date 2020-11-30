@@ -47,7 +47,7 @@ public class Tool {
         this.supplierID = supplierID;
     }
 
-    // Getter and setters below
+    // GETTERS AND SETTERS BELOW
     public int getID() {
         return ID;
     }

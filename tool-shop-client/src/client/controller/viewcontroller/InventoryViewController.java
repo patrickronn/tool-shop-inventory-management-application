@@ -12,8 +12,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages inventory management system's interactions with the user. Reads input from GUI and sends inventory
+ * model related requests to the model controller.
+ */
 public class InventoryViewController {
+    /**
+     * GUI for inventory management
+     */
     private InventoryManagementGUI inventoryManagementGUI;
+
+    /**
+     * Controller for managing the inventory model
+     */
     private InventoryModelController inventoryModelController;
 
     public InventoryViewController(InventoryManagementGUI gui, InventoryModelController inventoryModelController) {
@@ -23,6 +34,9 @@ public class InventoryViewController {
         addActionListeners();
     }
 
+    /**
+     * Adds listeners to GUI components
+     */
     public void addActionListeners() {
         inventoryManagementGUI.addLoadAllToolsListener(new LoadAllToolsListener());
         inventoryManagementGUI.addSearchByIdListener(new SearchToolInfoListener("toolId"));
@@ -33,6 +47,9 @@ public class InventoryViewController {
         saveOrderWhenClosing();
     }
 
+    /**
+     * Adds a window listener to the GUI to manage saving the form once the window is closed.
+     */
     private void saveOrderWhenClosing() {
         inventoryManagementGUI.addWindowListener(new WindowAdapter() {
             @Override
@@ -51,11 +68,17 @@ public class InventoryViewController {
                     dialog.pack();
                     dialog.setVisible(true);
                 }
-                else { inventoryManagementGUI.displayMessage("Order failed to save."); }
+                else {
+                    inventoryManagementGUI.displayMessage("Order failed to save.");
+                }
             }
         });
     }
 
+    /**
+     * ActionListener that interprets user input search parameters and sends the request to model controller.
+     * Includes validation check to ensure user entered proper search parameters
+     */
     class SearchToolInfoListener implements ActionListener {
         private String paramType;
         private String paramValue;
@@ -115,6 +138,9 @@ public class InventoryViewController {
         }
     }
 
+    /**
+     * ActionListener for the button that will load all tools into the GUI.
+     */
     class LoadAllToolsListener implements ActionListener {
 
         @Override
@@ -144,6 +170,10 @@ public class InventoryViewController {
         }
     }
 
+    /**
+     * ActionListener that monitors the search result selected by the user. Whenever a user changes
+     * their item selection, the current quantity field will update to the newly selected item.
+     */
     class SearchResultSelectionListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
@@ -174,6 +204,9 @@ public class InventoryViewController {
         }
     }
 
+    /**
+     * ActionListener that will open up the order dialog to display current order info
+     */
     class ViewOrderButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -184,6 +217,10 @@ public class InventoryViewController {
         }
     }
 
+    /**
+     * ActionListener that will reduce the quantity of an item. It will open up a prompt to the user to
+     * input amount of quantity to remove. Sends the decrease request to the model controller.
+     */
     class DecreaseQuantityButtonListener implements ActionListener {
 
         @Override
@@ -254,10 +291,4 @@ public class InventoryViewController {
             }
         }
     }
-
-//    public static void main(String[] args) {
-//        Inventory inv = new Inventory(new LinkedHashSet<Item>(), new Order());
-//        InventoryModelController imc = new InventoryModelController(new Serializer(), new Deserializer(), inv);
-//        InventoryViewController ivc = new InventoryViewController(new InventoryManagementGUI(),imc);
-//    }
 }

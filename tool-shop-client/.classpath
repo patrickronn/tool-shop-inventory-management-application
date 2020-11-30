@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="sql/mysql-connector-java-8.0.22.jar"/>
-	<classpathentry kind="lib" path="out/production/tool-shop/com"/>
-	<classpathentry kind="output" path="out/production/tool-shop"/>
+	<classpathentry exported="true" kind="lib" path="/home/patrickronn/Development/project-ensf-607-608/tool-shop-server/sql/mysql-connector-java-8.0.22.jar"/>
+	<classpathentry exported="true" kind="lib" path="com"/>
+	<classpathentry kind="output" path="out/production/tool-shop-client"/>
 </classpath>

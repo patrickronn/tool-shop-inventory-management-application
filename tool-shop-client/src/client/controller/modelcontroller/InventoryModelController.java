@@ -7,10 +7,25 @@ import java.util.LinkedHashSet;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Manages the client-side model related to inventory management.
+ * Uses messagemodel package for serializing and deserializing objects from the server
+ */
 public class InventoryModelController {
 
+    /**
+     * Serializes objects and sending them to server.
+     */
     private Serializer serializer;
+
+    /**
+     * Deserializes objects received from the server
+     */
     private Deserializer deserializer;
+
+    /**
+     * Stores a copy of the inventory retrieved from the server.
+     */
     private Inventory inventory;
 
     public InventoryModelController(Serializer serializer, Deserializer deserializer, Inventory inventory) {
@@ -23,6 +38,11 @@ public class InventoryModelController {
        return inventory.getItemStringMap(inventorySearchParamMap);
     }
 
+    /**
+     * Reequests for the list of items based on a set of item search parameters.
+     * @param itemsSearchParamMap Map of search parameters to tell the server what items to include
+     * @return true if item list was successfully received; else false
+     */
     @SuppressWarnings("unchecked")
     public boolean requestItemList(Map<String, String> itemsSearchParamMap) {
         // Send item list search parameters
@@ -39,6 +59,11 @@ public class InventoryModelController {
         else return false;
     }
 
+    /**
+     * Manages decreases an item's quantity by sending a request to server then updates client-side if successful.
+     * @param itemDecreaseParamMap Map of item info retrieved from the user/GUI
+     * @return true if server decrease the item's quantity; false if item couldn't be updated.
+     */
     public boolean decreaseQuantity(Map<String, String> itemDecreaseParamMap) {
 
         int itemId = Integer.parseInt(itemDecreaseParamMap.get("paramValue"));
@@ -62,10 +87,18 @@ public class InventoryModelController {
         return false;
     }
 
+    /**
+     * Checks whether an order has no order lines
+     * @return true order contains no orderlines; otherwise false
+     */
     public boolean orderIsEmpty() {
         return inventory.getOrder().orderIsEmpty();
     }
 
+    /**
+     * Sends the finalized order to the server
+     * @return true if order was stored successfully, otherwise false.
+     */
     public boolean saveOrder() {
         Order order = inventory.getOrder();
         if (order != null && !order.orderIsEmpty()) {
@@ -85,6 +118,7 @@ public class InventoryModelController {
         return false;
     }
 
+    // Getters below
     public int getItemQuantity(int itemId) {
         return inventory.getItemQuantity(itemId);
     }

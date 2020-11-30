@@ -6,13 +6,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 
+/**
+ * Reads objects sent from the server
+ */
 public class Deserializer {
+    /**
+     * Stream connecting to server socket comm.
+     */
     private ObjectInputStream objectIn;
 
     public Deserializer() {
         this.objectIn = null;
     }
 
+    /**
+     * Creates the object input stream
+     * @param inStream inStream which should be from the socket to the server
+     */
     public void openObjectInStream(InputStream inStream) {
         try {
             objectIn = new ObjectInputStream(inStream);
@@ -22,6 +32,9 @@ public class Deserializer {
         }
     }
 
+    /**
+     * Closes the stream
+     */
     public void closeObjectInStream() {
         try {
             objectIn.close();
@@ -31,14 +44,24 @@ public class Deserializer {
         }
     }
 
+    /**
+     * Reads a server response message
+     * @return server response message (e.g. "success" or "failed")
+     */
     public String awaitResponseMessage() {
         return (String) readObjectIn();
     }
 
+    /**
+     * @return a Message object received from the server
+     */
     public Message readMessage() {
         return (Message) readObjectIn();
     }
 
+    /**
+     * @return an Object received from the server
+     */
     private Object readObjectIn() {
         try {
             return objectIn.readObject();
